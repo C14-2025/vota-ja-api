@@ -8,7 +8,7 @@ import {
 import { Request, Response } from 'express';
 import { Logger } from 'winston';
 import { Observable, tap } from 'rxjs';
-import Environment from 'types/Environment';
+import Environment from 'domain/types/Environment';
 import { config } from 'config';
 
 @Injectable()
@@ -23,7 +23,7 @@ export default class LoggerInterceptor implements NestInterceptor {
         tap(data => {
           const delay = Date.now() - now;
           this.logResponse(context.switchToHttp().getResponse(), data, delay);
-        })
+        }),
       );
     }
     return next.handle();

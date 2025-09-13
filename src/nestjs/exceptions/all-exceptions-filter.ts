@@ -9,7 +9,7 @@ import {
 import { Response, Request } from 'express';
 
 import { ICustomHttpExceptionResponse } from './ICustomHttpExceptionResponse';
-import { IErrorResponse } from 'types/IErroResponse';
+import { IErrorResponse } from 'domain/types/IErroResponse';
 
 @Catch()
 export default class AllExceptionsFilter implements ExceptionFilter {
@@ -46,7 +46,7 @@ export default class AllExceptionsFilter implements ExceptionFilter {
 
   private getErrorResponse = (
     error: IErrorResponse,
-    request: Request
+    request: Request,
   ): ICustomHttpExceptionResponse => ({
     statusCode: error.statusCode,
     error: error.error,
@@ -59,7 +59,7 @@ export default class AllExceptionsFilter implements ExceptionFilter {
   private getErrorLog = (
     errorResponse: ICustomHttpExceptionResponse,
     request: Request,
-    exception: HttpException
+    exception: HttpException,
   ): string => {
     const { statusCode, error, timeStamp } = errorResponse;
     const { method, url } = request;

@@ -1,4 +1,4 @@
-import Environment from 'types/Environment';
+import Environment from 'domain/types/Environment';
 
 export interface IConfig {
   app: {

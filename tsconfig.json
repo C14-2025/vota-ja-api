@@ -17,6 +17,12 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "baseUrl": "./src",
+    "paths": {
+      "~/*": ["*"],
+      "~config/*": ["config/*"],
+      "~domain/*": ["domain/*"],
+      "~nestjs/*": ["nestjs/*"]
+    },
     "outDir": "./dist"
   }
 }
