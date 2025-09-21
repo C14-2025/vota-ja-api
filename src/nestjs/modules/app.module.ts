@@ -7,6 +7,8 @@ import LoggerInterceptor from 'nestjs/interceptors/logger.interceptor';
 import AllExceptionsFilter from 'nestjs/exceptions/all-exceptions-filter';
 import { WinstonModule } from 'nest-winston';
 import winstonConfig from 'config/winston.config';
+import AuthModule from './auth.module';
+import TypeOrmModuleConfig from '~/databases/typeorm';
 
 @Module({
   imports: [
@@ -14,6 +16,8 @@ import winstonConfig from 'config/winston.config';
     ThrottlerModule.forRoot([
       { ttl: config.rateLimit.ttl, limit: config.rateLimit.limit },
     ]),
+    TypeOrmModuleConfig,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [

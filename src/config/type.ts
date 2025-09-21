@@ -1,3 +1,4 @@
+import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import Environment from 'domain/types/Environment';
 
 export interface IConfig {
@@ -15,4 +16,10 @@ export interface IConfig {
     tag: string;
     path: string;
   };
+  jwt: {
+    privateKey: string;
+    publicKey: string;
+    expiresIn: string;
+  };
+  typeOrmDb: TypeOrmModuleOptions;
 }

@@ -1,0 +1,46 @@
+services:
+  # nestjs-api:
+  #   container_name: nestjs-api
+  #   image: nestjs-api:${APP_ENV}
+  #   depends_on:
+  #     - postgres
+  #   ports:
+  #     - '5000:5000'
+  #   environment:
+  #     - APP_ENV=${APP_ENV}
+  #     - APP_SECRET=${APP_SECRET}
+  #     - APP_PORT=${APP_PORT}
+  #     - POSTGRES_HOST=${POSTGRES_DOCKER_HOST}
+  #     - POSTGRES_PORT=${POSTGRES_PORT}
+  #     - POSTGRES_USER=${POSTGRES_USER}
+  #     - POSTGRES_PASS=${POSTGRES_PASS}
+  #     - POSTGRES_DB_NAME=${POSTGRES_DB_NAME}
+  #     - TYPEORM_SYNCHRONIZE=${TYPEORM_SYNCHRONIZE}
+  #     - THROTTLER_TTL=${THROTTLER_TTL}
+  #     - THROTTLER_LIMIT=${THROTTLER_LIMIT}
+  #   build:
+  #     context: .
+  #     target: ${APP_ENV}
+  #     dockerfile: Dockerfile
+  #   volumes:
+  #     - ./src:/usr/nestjs-api/src
+  #   networks:
+  #     - custom-network
+
+  postgres:
+    container_name: vota-ja-api-postgresql
+    image: bitnami/postgresql
+    ports:
+      - 5432:5432
+    volumes:
+      - ./db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASS}
+      - POSTGRES_DB=${POSTGRES_DB_NAME}
+    networks:
+      - custom-network
+
+networks:
+  custom-network:
+    driver: bridge
