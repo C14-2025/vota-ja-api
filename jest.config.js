@@ -16,12 +16,12 @@ module.exports = {
   coverageDirectory: './coverage',
   coverageReporters: ['text', 'lcov', 'html'],
   testPathIgnorePatterns: ['/node_modules/', '/dist/'],
-  // moduleNameMapper: {
-  //   '^~/(.*)$': '<rootDir>/src/$1',
-  //   '^~config/(.*)$': '<rootDir>/src/config/$1',
-  //   '^~domain/(.*)$': '<rootDir>/src/domain/$1',
-  //   '^~nestjs/(.*)$': '<rootDir>/src/nestjs/$1',
-  // },
+  moduleNameMapper: {
+    '^~/(.*)$': '<rootDir>/src/$1',
+    '^~config/(.*)$': '<rootDir>/src/config/$1',
+    '^~domain/(.*)$': '<rootDir>/src/domain/$1',
+    '^~nestjs/(.*)$': '<rootDir>/src/nestjs/$1',
+  },
   setupFilesAfterEnv: ['<rootDir>/tests/setup.ts'],
   testTimeout: 10000,
   verbose: true,

@@ -8,6 +8,7 @@ import AllExceptionsFilter from 'nestjs/exceptions/all-exceptions-filter';
 import { WinstonModule } from 'nest-winston';
 import winstonConfig from 'config/winston.config';
 import AuthModule from './auth.module';
+import UserModule from './user.module';
 import TypeOrmModuleConfig from '~/databases/typeorm';
 
 @Module({
@@ -18,6 +19,7 @@ import TypeOrmModuleConfig from '~/databases/typeorm';
     ]),
     TypeOrmModuleConfig,
     AuthModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [
