@@ -2,14 +2,19 @@ import { Injectable, NotFoundException, Inject } from '@nestjs/common';
 import { IUserRepository } from '~/domain/types/repositories/IUserRepository';
 import User from '~/domain/entities/User';
 import UserResponseDTO from '~/dtos/user/UserResponseDTO';
-import { USER_REPOSITORY_TOKEN } from '../modules/user.module';
 
 @Injectable()
 export default class UserService {
   constructor(
-    @Inject(USER_REPOSITORY_TOKEN)
+    @Inject('IUserRepository')
     private readonly userRepository: IUserRepository,
-  ) {}
+  ) { }
+
+  async createUser(payload: Partial<User>): Promise<UserResponseDTO> {
+    const userToCreate = new User(payload);
+    const created = await this.userRepository.create(userToCreate);
+    return this.mapUserToResponseDTO(created);
+  }
 
   async getUserById(id: string): Promise<UserResponseDTO> {
     const user = await this.userRepository.getById(id);
@@ -19,6 +24,11 @@ export default class UserService {
     }
 
     return this.mapUserToResponseDTO(user);
+  }
+
+  async getAllUsers(): Promise<UserResponseDTO[]> {
+    const users = await this.userRepository.findAll();
+    return users.map((u) => this.mapUserToResponseDTO(u));
   }
 
   private mapUserToResponseDTO(user: User): UserResponseDTO {

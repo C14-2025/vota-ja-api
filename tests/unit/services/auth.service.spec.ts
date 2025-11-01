@@ -16,6 +16,7 @@ describe('AuthenticateUseCase', () => {
       create: jest.fn(),
       getById: jest.fn(),
       findByEmail: jest.fn(),
+      findAll: jest.fn(),
     };
 
     hashComparer = {

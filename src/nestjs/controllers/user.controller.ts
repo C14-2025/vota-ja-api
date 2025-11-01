@@ -1,16 +1,36 @@
-import { Controller, Get, Param, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { Controller, Get, Param, UseGuards, Post, Body } from '@nestjs/common';
+import { ApiBearerAuth, ApiOkResponse, ApiTags, ApiCreatedResponse } from '@nestjs/swagger';
 import UserService from '../services/user.service';
 import UserResponseDTO from '~/dtos/user/UserResponseDTO';
+import UserCreateDTO from '~/dtos/user/UserCreateDTO';
 import JwtAuthGuard from '../auth/jwt-auth.guard';
 import ApiCommonResponses from '~/swagger/swagger-common-responses.decorator';
 
 @ApiTags('users')
 @Controller('/users')
-@UseGuards(JwtAuthGuard)
+// @UseGuards(JwtAuthGuard)
 @ApiBearerAuth()
 export default class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) { }
+
+  @Post()
+  @ApiCreatedResponse({
+    description: 'Create a new user',
+    type: UserResponseDTO,
+  })
+  async createUser(@Body() body: UserCreateDTO): Promise<UserResponseDTO> {
+    return this.userService.createUser(body as any);
+  }
+
+  @Get()
+  @ApiOkResponse({
+    description: 'List all users',
+    type: UserResponseDTO,
+    isArray: true,
+  })
+  async getAllUsers(): Promise<UserResponseDTO[]> {
+    return this.userService.getAllUsers();
+  }
 
   @Get('/:id')
   @ApiOkResponse({

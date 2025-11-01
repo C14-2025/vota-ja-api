@@ -10,7 +10,7 @@ export default class UserRepository implements IUserRepository {
   constructor(
     @InjectRepository(UserModel)
     private readonly userRepository: Repository<UserModel>,
-  ) {}
+  ) { }
 
   async create(user: User): Promise<User> {
     const savedUserModel = await this.userRepository.save(user);
@@ -35,5 +35,9 @@ export default class UserRepository implements IUserRepository {
     }
 
     return user;
+  }
+
+  async findAll(): Promise<User[]> {
+    return this.userRepository.find();
   }
 }
