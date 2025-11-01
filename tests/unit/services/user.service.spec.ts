@@ -13,6 +13,7 @@ describe('UserService', () => {
     getById: jest.fn(),
     create: jest.fn(),
     findByEmail: jest.fn(),
+    findAll: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -102,6 +103,74 @@ describe('UserService', () => {
       expect(result.id).toBe(mockUser.id);
       expect(result.name).toBe(mockUser.name);
       expect(result.email).toBe(mockUser.email);
+    });
+  });
+
+  describe('getAllUsers', () => {
+    it('should return mapped users array', async () => {
+      const userId = '123e4567-e89b-12d3-a456-426614174010';
+      const mockUser: User = {
+        id: userId,
+        name: 'List User',
+        email: 'list.user@example.com',
+        password: 'pw',
+        createdAt: new Date('2023-10-12T10:00:00.000Z'),
+        updatedAt: new Date('2023-10-12T10:00:00.000Z'),
+      };
+
+      mockUserRepository.findAll.mockResolvedValue([mockUser]);
+
+      const result = await service.getAllUsers();
+
+      expect(Array.isArray(result)).toBe(true);
+      expect(result[0]).toEqual({
+        id: mockUser.id,
+        name: mockUser.name,
+        email: mockUser.email,
+        lastLogin: mockUser.lastLogin,
+        createdAt: mockUser.createdAt,
+        updatedAt: mockUser.updatedAt,
+      });
+      expect(result[0]).not.toHaveProperty('password');
+      expect(userRepository['findAll']).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('createUser', () => {
+    it('should create a new user and return mapped DTO', async () => {
+      const payload: Partial<User> = {
+        name: 'New User',
+        email: 'new.user@example.com',
+        password: 'newPassword',
+      };
+
+      const createdUser: User = {
+        id: '123e4567-e89b-12d3-a456-426614174011',
+        name: payload.name,
+        email: payload.email,
+        password: payload.password,
+        createdAt: new Date('2023-10-13T10:00:00.000Z'),
+        updatedAt: new Date('2023-10-13T10:00:00.000Z'),
+      } as User;
+
+      mockUserRepository.create.mockResolvedValue(createdUser);
+
+      const result = await service.createUser(payload);
+
+      expect(result).toEqual({
+        id: createdUser.id,
+        name: createdUser.name,
+        email: createdUser.email,
+        lastLogin: createdUser.lastLogin,
+        createdAt: createdUser.createdAt,
+        updatedAt: createdUser.updatedAt,
+      });
+
+      expect(userRepository['create']).toHaveBeenCalledTimes(1);
+      expect(userRepository['create']).toHaveBeenCalledWith(expect.objectContaining({
+        name: payload.name,
+        email: payload.email,
+      }));
     });
   });
 });
