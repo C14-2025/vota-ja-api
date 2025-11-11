@@ -1,5 +1,5 @@
 import AuthenticateUseCase from '../../../src/domain/services/auth.service';
-import { IUserRepository } from '../../../src/domain/types/repositories/IUserRepository';
+import { IUserRepository } from '../../../src/domain/interfaces/repositories/IUserRepository';
 import { HashComparer } from '../../../src/domain/cryptography/hash-comparer';
 import { Encrypter } from '../../../src/domain/cryptography/encrypter';
 import WrongCredentialsError from '../../../src/domain/errors/WrongCredentialsError';

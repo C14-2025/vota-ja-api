@@ -9,7 +9,7 @@ import {
 import { Response, Request } from 'express';
 
 import { ICustomHttpExceptionResponse } from './ICustomHttpExceptionResponse';
-import { IErrorResponse } from 'domain/types/IErroResponse';
+import { IErrorResponse } from '~/domain/interfaces/IErroResponse';
 
 @Catch()
 export default class AllExceptionsFilter implements ExceptionFilter {

@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNumber, IsString } from 'class-validator';
-import { IErrorResponse } from '~/domain/types/IErroResponse';
+import { IErrorResponse } from '~/domain/interfaces/IErroResponse';
 
 export default class ErrorResponseDTO implements IErrorResponse {
   @ApiProperty()

@@ -1,5 +1,5 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
-import Environment from 'domain/types/Environment';
+import Environment from '~/domain/interfaces/Environment';
 
 export interface IConfig {
   app: {

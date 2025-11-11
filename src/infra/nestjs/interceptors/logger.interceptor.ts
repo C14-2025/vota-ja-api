@@ -8,7 +8,7 @@ import {
 import { Request, Response } from 'express';
 import { Logger } from 'winston';
 import { Observable, tap } from 'rxjs';
-import Environment from 'domain/types/Environment';
+import Environment from '~/domain/interfaces/Environment';
 import { config } from '~/infra/config';
 
 @Injectable()

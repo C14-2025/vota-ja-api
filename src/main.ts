@@ -4,7 +4,7 @@ import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { WinstonModule } from 'nest-winston';
 
 import { config } from '~/infra/config';
-import Environment from 'domain/types/Environment';
+import Environment from '~/domain/interfaces/Environment';
 import winstonConfig from '~/infra/config/winston.config';
 import AppModule from 'infra/nestjs/modules/app.module';
 import setSwagger from '~/infra/swagger';

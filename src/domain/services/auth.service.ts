@@ -1,6 +1,6 @@
-import { IUserRepository } from '../types/repositories/IUserRepository';
-import IAuthLoginDTO from '../types/dtos/auth/IAuthLoginDTO';
-import IAuthResponseDTO from '../types/dtos/auth/IAuthResponseDTO';
+import { IUserRepository } from '../interfaces/repositories/IUserRepository';
+import IAuthLoginDTO from '../interfaces/dtos/auth/IAuthLoginDTO';
+import IAuthResponseDTO from '../interfaces/dtos/auth/IAuthResponseDTO';
 import { HashComparer } from '../cryptography/hash-comparer';
 import { Encrypter } from '../cryptography/encrypter';
 import WrongCredentialsError from '../errors/WrongCredentialsError';

@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
-import IAuthLoginDTO from '~/domain/types/dtos/auth/IAuthLoginDTO';
+import IAuthLoginDTO from '~/domain/interfaces/dtos/auth/IAuthLoginDTO';
 
 export default class AuthLoginDTO implements IAuthLoginDTO {
   @ApiProperty({ type: 'string', description: 'User email', required: true })

@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString } from 'class-validator';
 import { Type } from 'class-transformer';
-import IAuthResponseDTO from '~/domain/types/dtos/auth/IAuthResponseDTO';
+import IAuthResponseDTO from '~/domain/interfaces/dtos/auth/IAuthResponseDTO';
 import User from '~/domain/entities/User';
 
 export default class AuthResponseDTO implements IAuthResponseDTO {

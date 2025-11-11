@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { NotFoundException } from '@nestjs/common';
 import UserService from '~/nestjs/services/user.service';
-import { IUserRepository } from '~/domain/types/repositories/IUserRepository';
+import { IUserRepository } from '~/domain/interfaces/repositories/IUserRepository';
 import { USER_REPOSITORY_TOKEN } from '~/nestjs/modules/user.module';
 import User from '~/domain/entities/User';
 
@@ -167,10 +167,12 @@ describe('UserService', () => {
       });
 
       expect(userRepository['create']).toHaveBeenCalledTimes(1);
-      expect(userRepository['create']).toHaveBeenCalledWith(expect.objectContaining({
-        name: payload.name,
-        email: payload.email,
-      }));
+      expect(userRepository['create']).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: payload.name,
+          email: payload.email,
+        }),
+      );
     });
   });
 });
