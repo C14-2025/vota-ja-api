@@ -19,9 +19,10 @@
     "baseUrl": "./src",
     "paths": {
       "~/*": ["*"],
-      "~config/*": ["config/*"],
+      "~config/*": ["infra/config/*"],
       "~domain/*": ["domain/*"],
-      "~nestjs/*": ["nestjs/*"]
+      "~nestjs/*": ["infra/nestjs/*"],
+      "~databases/*": ["infra/databases/*"]
     },
     "outDir": "./dist"
   }

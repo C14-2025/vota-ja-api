@@ -8,7 +8,7 @@ import {
   ApiTooManyRequestsResponse,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import ErrorResponseDTO from '~/dtos/ErrorResponseDTO';
+import ErrorResponseDTO from '~/infra/dtos/ErrorResponseDTO';
 
 interface CommonResponsesOptions {
   badRequest?: boolean;

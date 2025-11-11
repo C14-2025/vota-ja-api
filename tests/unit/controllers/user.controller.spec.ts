@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { NotFoundException } from '@nestjs/common';
 import UserController from '~/nestjs/controllers/user.controller';
 import UserService from '~/nestjs/services/user.service';
-import UserResponseDTO from '~/dtos/user/UserResponseDTO';
+import UserResponseDTO from '~/infra/dtos/user/UserResponseDTO';
 
 describe('UserController', () => {
   let controller: UserController;

@@ -4,13 +4,13 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import BcryptHasher from '~/cryptography/bcrypt-hasher';
-import JwtEncrypter from '~/cryptography/jwt-encrypter';
-import UserRepository from '~/databases/typeorm/repositories/user.repository';
+import BcryptHasher from '~/infra/cryptography/bcrypt-hasher';
+import JwtEncrypter from '~/infra/cryptography/jwt-encrypter';
+import UserRepository from '~/infra/databases/typeorm/repositories/user.repository';
 import WrongCredentialsError from '~/domain/errors/WrongCredentialsError';
 import AuthenticateUseCase from '~/domain/services/auth.service';
-import AuthLoginDTO from '~/dtos/auth/AuthLoginDTO';
-import AuthResponseDTO from '~/dtos/auth/AuthResponseDTO';
+import AuthLoginDTO from '~/infra/dtos/auth/AuthLoginDTO';
+import AuthResponseDTO from '~/infra/dtos/auth/AuthResponseDTO';
 
 @Injectable()
 export default class AuthorizationService {

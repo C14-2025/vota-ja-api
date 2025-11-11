@@ -3,11 +3,11 @@ import { NestFactory } from '@nestjs/core';
 import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { WinstonModule } from 'nest-winston';
 
-import { config } from 'config';
+import { config } from '~/infra/config';
 import Environment from 'domain/types/Environment';
-import winstonConfig from 'config/winston.config';
-import AppModule from 'nestjs/modules/app.module';
-import setSwagger from 'swagger';
+import winstonConfig from '~/infra/config/winston.config';
+import AppModule from 'infra/nestjs/modules/app.module';
+import setSwagger from '~/infra/swagger';
 
 async function bootstrap() {
   const logger = WinstonModule.createLogger(winstonConfig);

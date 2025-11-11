@@ -6,8 +6,8 @@ import { config } from '../../config';
 
 import LocalStrategy from '../auth/local.strategy';
 import JwtStrategy from '../auth/jwt.strategy';
-import UserModel from '~/databases/models/User';
-import UserRepository from '~/databases/typeorm/repositories/user.repository';
+import UserModel from '~/infra/databases/models/User';
+import UserRepository from '~/infra/databases/typeorm/repositories/user.repository';
 import AuthorizationService from '../services/auth.service';
 import AuthController from '../controllers/auth.controller';
 

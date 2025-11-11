@@ -1,17 +1,22 @@
 import { Controller, Get, Param, UseGuards, Post, Body } from '@nestjs/common';
-import { ApiBearerAuth, ApiOkResponse, ApiTags, ApiCreatedResponse } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOkResponse,
+  ApiTags,
+  ApiCreatedResponse,
+} from '@nestjs/swagger';
 import UserService from '../services/user.service';
-import UserResponseDTO from '~/dtos/user/UserResponseDTO';
-import UserCreateDTO from '~/dtos/user/UserCreateDTO';
+import UserResponseDTO from '~/infra/dtos/user/UserResponseDTO';
+import UserCreateDTO from '~/infra/dtos/user/UserCreateDTO';
 import JwtAuthGuard from '../auth/jwt-auth.guard';
-import ApiCommonResponses from '~/swagger/swagger-common-responses.decorator';
+import ApiCommonResponses from '~/infra/swagger/swagger-common-responses.decorator';
 
 @ApiTags('users')
 @Controller('/users')
 // @UseGuards(JwtAuthGuard)
 @ApiBearerAuth()
 export default class UserController {
-  constructor(private readonly userService: UserService) { }
+  constructor(private readonly userService: UserService) {}
 
   @Post()
   @ApiCreatedResponse({

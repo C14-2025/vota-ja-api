@@ -9,7 +9,7 @@ import { Request, Response } from 'express';
 import { Logger } from 'winston';
 import { Observable, tap } from 'rxjs';
 import Environment from 'domain/types/Environment';
-import { config } from 'config';
+import { config } from '~/infra/config';
 
 @Injectable()
 export default class LoggerInterceptor implements NestInterceptor {
