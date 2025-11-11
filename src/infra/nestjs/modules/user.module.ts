@@ -12,6 +12,7 @@ export const USER_REPOSITORY_TOKEN = 'IUserRepository';
   controllers: [UserController],
   providers: [
     UserService,
+    UserRepository,
     {
       provide: USER_REPOSITORY_TOKEN,
       useClass: UserRepository,

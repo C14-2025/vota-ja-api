@@ -1,14 +1,11 @@
 import { Injectable, NotFoundException, Inject } from '@nestjs/common';
-import { IUserRepository } from '~/domain/interfaces/repositories/IUserRepository';
 import User from '~/domain/entities/User';
 import UserResponseDTO from '~/infra/dtos/user/UserResponseDTO';
+import UserRepository from '~/infra/databases/typeorm/repositories/user.repository';
 
 @Injectable()
 export default class UserService {
-  constructor(
-    @Inject('IUserRepository')
-    private readonly userRepository: IUserRepository,
-  ) {}
+  constructor(private readonly userRepository: UserRepository) {}
 
   async createUser(payload: Partial<User>): Promise<UserResponseDTO> {
     const userToCreate = new User(payload);
