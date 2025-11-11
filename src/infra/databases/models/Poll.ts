@@ -25,7 +25,7 @@ export default class PollModel extends BaseModel implements Poll {
   @Column('enum', { enum: PollTypes })
   type: PollTypes;
 
-  @OneToMany(() => PollOptionModel, option => option.poll)
+  @OneToMany(() => PollOptionModel, option => option.poll, { cascade: true })
   options: Relation<PollOption[]>;
 
   @ManyToOne(() => UserModel, {

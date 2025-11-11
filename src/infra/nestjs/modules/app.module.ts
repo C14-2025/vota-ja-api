@@ -8,6 +8,7 @@ import { WinstonModule } from 'nest-winston';
 import winstonConfig from '~/infra/config/winston.config';
 import AuthModule from './auth.module';
 import UserModule from './user.module';
+import PollModule from './poll.module';
 import TypeOrmModuleConfig from '../../databases/typeorm';
 import LoggerInterceptor from '../interceptors/logger.interceptor';
 import AllExceptionsFilter from '../exceptions/all-exceptions-filter';
@@ -21,6 +22,7 @@ import AllExceptionsFilter from '../exceptions/all-exceptions-filter';
     TypeOrmModuleConfig,
     AuthModule,
     UserModule,
+    PollModule,
   ],
   controllers: [AppController],
   providers: [
