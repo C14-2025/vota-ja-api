@@ -36,4 +36,21 @@ export default class VoteRepository implements IVoteRepository {
 
     return vote;
   }
+
+  async countVotesByPollOption(
+    pollId: string,
+  ): Promise<{ optionId: string; count: number }[]> {
+    const result = await this.voteRepository
+      .createQueryBuilder('vote')
+      .select('vote.optionId', 'optionId')
+      .addSelect('COUNT(vote.optionId)', 'count')
+      .where('vote.pollId = :pollId', { pollId })
+      .groupBy('vote.optionId')
+      .getRawMany();
+
+    return result.map(r => ({
+      optionId: r.optionId,
+      count: parseInt(r.count, 10),
+    }));
+  }
 }

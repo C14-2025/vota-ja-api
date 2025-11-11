@@ -36,6 +36,9 @@ export default class VoteModel extends WeakEntityBaseModel implements Votes {
   @JoinColumn({ name: 'poll_id' })
   poll: Relation<Poll>;
 
+  @PrimaryColumn({ name: 'option_id' })
+  optionId: string;
+
   @ManyToOne(() => PollOptionModel, {
     nullable: false,
   })

@@ -6,16 +6,19 @@ import PollService from '../services/poll.service';
 import PollController from '../controllers/poll.controller';
 import UserRepository from '~/infra/databases/typeorm/repositories/user.repository';
 import UserModel from '~/infra/databases/models/User';
+import VoteRepository from '~/infra/databases/typeorm/repositories/vote.repository';
+import VoteModel from '~/infra/databases/models/Vote';
 
 export const POLL_REPOSITORY_TOKEN = 'IPollRepository';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([PollModel, UserModel])],
+  imports: [TypeOrmModule.forFeature([PollModel, UserModel, VoteModel])],
   controllers: [PollController],
   providers: [
     PollService,
     PollRepository,
     UserRepository,
+    VoteRepository,
     {
       provide: POLL_REPOSITORY_TOKEN,
       useClass: PollRepository,
