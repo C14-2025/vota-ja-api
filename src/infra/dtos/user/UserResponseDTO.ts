@@ -35,6 +35,7 @@ export default class UserResponseDTO {
   @ApiProperty({
     example: '2023-10-10T10:00:00.000Z',
     description: 'Date when user was last updated',
+    required: false,
   })
-  updatedAt: Date;
+  updatedAt?: Date;
 }

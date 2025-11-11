@@ -1,41 +1,53 @@
-import { Injectable, NotFoundException, Inject } from '@nestjs/common';
-import User from '~/domain/entities/User';
-import UserResponseDTO from '~/infra/dtos/user/UserResponseDTO';
+import {
+  Injectable,
+  NotFoundException,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import UserRepository from '~/infra/databases/typeorm/repositories/user.repository';
+import UserNotFoundError from '~/domain/errors/UserNotFoundError';
+import CreateUserUseCase from '~/domain/use-cases/user/create-user';
+import GetUserByIdUseCase from '~/domain/use-cases/user/get-user-by-id';
+import GetAllUsersUseCase from '~/domain/use-cases/user/get-all-users';
+import ICreateUserDTO from '~/domain/interfaces/dtos/user/ICreateUserDTO';
+import UserResponseDTO from '~/infra/dtos/user/UserResponseDTO';
 
 @Injectable()
 export default class UserService {
-  constructor(private readonly userRepository: UserRepository) {}
+  createUserUseCase: CreateUserUseCase;
+  getUserByIdUseCase: GetUserByIdUseCase;
+  getAllUsersUseCase: GetAllUsersUseCase;
 
-  async createUser(payload: Partial<User>): Promise<UserResponseDTO> {
-    const userToCreate = new User(payload);
-    const created = await this.userRepository.create(userToCreate);
-    return this.mapUserToResponseDTO(created);
+  constructor(private readonly userRepository: UserRepository) {
+    this.createUserUseCase = new CreateUserUseCase(this.userRepository);
+    this.getUserByIdUseCase = new GetUserByIdUseCase(this.userRepository);
+    this.getAllUsersUseCase = new GetAllUsersUseCase(this.userRepository);
+  }
+
+  async createUser(payload: ICreateUserDTO): Promise<UserResponseDTO> {
+    try {
+      return await this.createUserUseCase.execute(payload);
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
   }
 
   async getUserById(id: string): Promise<UserResponseDTO> {
-    const user = await this.userRepository.getById(id);
+    try {
+      return await this.getUserByIdUseCase.execute(id);
+    } catch (error) {
+      if (error instanceof UserNotFoundError) {
+        throw new NotFoundException(error.message);
+      }
 
-    if (!user) {
-      throw new NotFoundException(`User with ID ${id} not found`);
+      throw new InternalServerErrorException(error);
     }
-
-    return this.mapUserToResponseDTO(user);
   }
 
   async getAllUsers(): Promise<UserResponseDTO[]> {
-    const users = await this.userRepository.findAll();
-    return users.map(u => this.mapUserToResponseDTO(u));
-  }
-
-  private mapUserToResponseDTO(user: User): UserResponseDTO {
-    return {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      lastLogin: user.lastLogin,
-      createdAt: user.createdAt,
-      updatedAt: user.updatedAt,
-    };
+    try {
+      return await this.getAllUsersUseCase.execute();
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
   }
 }
