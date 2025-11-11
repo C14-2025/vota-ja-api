@@ -15,5 +15,5 @@ export default class User {
 
   createdAt: Date;
 
-  updatedAt: Date;
+  updatedAt?: Date;
 }
