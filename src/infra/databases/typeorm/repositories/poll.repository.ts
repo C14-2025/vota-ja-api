@@ -17,4 +17,17 @@ export default class PollRepository implements IPollRepository {
     const savedPollModel = await this.pollRepository.save(poll);
     return savedPollModel;
   }
+
+  async getById(id: string): Promise<Poll | null> {
+    const poll = await this.pollRepository.findOne({
+      where: { id },
+      relations: ['options', 'creator'],
+    });
+
+    if (poll == null) {
+      return null;
+    }
+
+    return poll;
+  }
 }
