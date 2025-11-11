@@ -1,9 +1,9 @@
-import AuthenticateUseCase from '../../../src/domain/services/auth.service';
-import { IUserRepository } from '../../../src/domain/interfaces/repositories/IUserRepository';
-import { HashComparer } from '../../../src/domain/cryptography/hash-comparer';
-import { Encrypter } from '../../../src/domain/cryptography/encrypter';
-import WrongCredentialsError from '../../../src/domain/errors/WrongCredentialsError';
-import User from '../../../src/domain/entities/User';
+import AuthenticateUseCase from '../../../../src/domain/use-cases/auth/authenticate';
+import { IUserRepository } from '../../../../src/domain/interfaces/repositories/IUserRepository';
+import { HashComparer } from '../../../../src/domain/cryptography/hash-comparer';
+import { Encrypter } from '../../../../src/domain/cryptography/encrypter';
+import WrongCredentialsError from '../../../../src/domain/errors/WrongCredentialsError';
+import User from '../../../../src/domain/entities/User';
 
 describe('AuthenticateUseCase', () => {
   let authenticateUseCase: AuthenticateUseCase;

@@ -8,7 +8,7 @@ import BcryptHasher from '~/infra/cryptography/bcrypt-hasher';
 import JwtEncrypter from '~/infra/cryptography/jwt-encrypter';
 import UserRepository from '~/infra/databases/typeorm/repositories/user.repository';
 import WrongCredentialsError from '~/domain/errors/WrongCredentialsError';
-import AuthenticateUseCase from '~/domain/services/auth.service';
+import AuthenticateUseCase from '~/domain/use-cases/auth/authenticate';
 import AuthLoginDTO from '~/infra/dtos/auth/AuthLoginDTO';
 import AuthResponseDTO from '~/infra/dtos/auth/AuthResponseDTO';
 
