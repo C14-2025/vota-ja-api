@@ -13,8 +13,6 @@ import ApiCommonResponses from '~/infra/swagger/swagger-common-responses.decorat
 
 @ApiTags('users')
 @Controller('/users')
-// @UseGuards(JwtAuthGuard)
-@ApiBearerAuth()
 export default class UserController {
   constructor(private readonly userService: UserService) {}
 
@@ -27,6 +25,8 @@ export default class UserController {
     return this.userService.createUser(body as any);
   }
 
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @Get()
   @ApiOkResponse({
     description: 'List all users',
@@ -37,6 +37,8 @@ export default class UserController {
     return this.userService.getAllUsers();
   }
 
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @Get('/:id')
   @ApiOkResponse({
     description: 'Get user by ID',
