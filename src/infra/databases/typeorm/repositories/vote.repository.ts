@@ -53,4 +53,11 @@ export default class VoteRepository implements IVoteRepository {
       count: parseInt(r.count, 10),
     }));
   }
+
+  async delete(userId: string, pollId: string): Promise<void> {
+    await this.voteRepository.delete({
+      voterId: userId,
+      pollId: pollId,
+    });
+  }
 }
