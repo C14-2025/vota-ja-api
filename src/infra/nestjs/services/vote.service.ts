@@ -17,6 +17,7 @@ import PollNotFoundError from '~/domain/errors/PollNotFoundError';
 import PollOptionNotFoundError from '~/domain/errors/PollOptionNotFoundError';
 import UserAlreadyVotedError from '~/domain/errors/UserAlreadyVotedError';
 import VoteNotFoundError from '~/domain/errors/VoteNotFoundError';
+import { PollRealtimeAdapter } from '~/infra/websocket/poll-realtime-adapter';
 
 @Injectable()
 export default class VoteService {
@@ -28,12 +29,14 @@ export default class VoteService {
     private readonly userRepository: UserRepository,
     private readonly pollRepository: PollRepository,
     private readonly pollOptionRepository: PollOptionRepository,
+    private readonly pollRealtimeAdapter: PollRealtimeAdapter,
   ) {
     this.createVoteUseCase = new CreateVoteUseCase(
       this.voteRepository,
       this.userRepository,
       this.pollRepository,
       this.pollOptionRepository,
+      this.pollRealtimeAdapter,
     );
 
     this.removeVoteUseCase = new RemoveVoteUseCase(this.voteRepository);

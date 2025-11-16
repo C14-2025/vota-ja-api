@@ -10,6 +10,7 @@ import PollRepository from '~/infra/databases/typeorm/repositories/poll.reposito
 import PollModel from '~/infra/databases/models/Poll';
 import PollOptionRepository from '~/infra/databases/typeorm/repositories/poll-option.repository';
 import PollOptionModel from '~/infra/databases/models/PollOption';
+import PollModule from './poll.module';
 
 export const VOTE_REPOSITORY_TOKEN = 'IVoteRepository';
 
@@ -21,6 +22,7 @@ export const VOTE_REPOSITORY_TOKEN = 'IVoteRepository';
       PollModel,
       PollOptionModel,
     ]),
+    PollModule,
   ],
   controllers: [VoteController],
   providers: [
