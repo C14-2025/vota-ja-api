@@ -6,4 +6,5 @@ export interface IVoteRepository {
   countVotesByPollOption(
     pollId: string,
   ): Promise<{ optionId: string; count: number }[]>;
+  delete(userId: string, pollId: string): Promise<void>;
 }

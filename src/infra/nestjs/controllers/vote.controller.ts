@@ -1,10 +1,13 @@
 import {
   Controller,
   Patch,
+  Delete,
   Body,
   UseGuards,
   Request,
   Param,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -42,5 +45,25 @@ export default class VoteController {
     @Body() body: VoteCreateDTO,
   ): Promise<VoteResponseDTO> {
     return this.voteService.createVote(req.user.id, pollId, body as any);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @Delete(':pollId/vote')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiParam({
+    name: 'pollId',
+    description: 'The ID of the poll to remove vote from',
+    type: 'string',
+  })
+  @ApiOkResponse({
+    description: 'Vote successfully removed',
+  })
+  @ApiCommonResponses({ unauthorized: true, forbidden: false })
+  async removeVote(
+    @Request() req,
+    @Param('pollId') pollId: string,
+  ): Promise<void> {
+    return this.voteService.removeVote(req.user.id, pollId);
   }
 }
