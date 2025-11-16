@@ -9,16 +9,19 @@ import UserRepository from '~/infra/databases/typeorm/repositories/user.reposito
 import PollRepository from '~/infra/databases/typeorm/repositories/poll.repository';
 import PollOptionRepository from '~/infra/databases/typeorm/repositories/poll-option.repository';
 import CreateVoteUseCase from '~/domain/use-cases/vote/create';
+import RemoveVoteUseCase from '~/domain/use-cases/vote/remove';
 import { ICreateVote } from '~/domain/interfaces/dtos/vote/ICreateVote';
 import VoteResponseDTO from '~/infra/dtos/vote/VoteResponseDTO';
 import UserNotFoundError from '~/domain/errors/UserNotFoundError';
 import PollNotFoundError from '~/domain/errors/PollNotFoundError';
 import PollOptionNotFoundError from '~/domain/errors/PollOptionNotFoundError';
 import UserAlreadyVotedError from '~/domain/errors/UserAlreadyVotedError';
+import VoteNotFoundError from '~/domain/errors/VoteNotFoundError';
 
 @Injectable()
 export default class VoteService {
   createVoteUseCase: CreateVoteUseCase;
+  removeVoteUseCase: RemoveVoteUseCase;
 
   constructor(
     private readonly voteRepository: VoteRepository,
@@ -32,6 +35,8 @@ export default class VoteService {
       this.pollRepository,
       this.pollOptionRepository,
     );
+
+    this.removeVoteUseCase = new RemoveVoteUseCase(this.voteRepository);
   }
 
   async createVote(
@@ -74,6 +79,18 @@ export default class VoteService {
 
       if (error instanceof UserAlreadyVotedError) {
         throw new ConflictException(error.message);
+      }
+
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async removeVote(userId: string, pollId: string): Promise<void> {
+    try {
+      await this.removeVoteUseCase.execute(userId, pollId);
+    } catch (error) {
+      if (error instanceof VoteNotFoundError) {
+        throw new NotFoundException(error.message);
       }
 
       throw new InternalServerErrorException(error);
