@@ -43,6 +43,6 @@ export default class PollRepository implements IPollRepository {
       .leftJoinAndSelect('poll.options', 'options')
       .orderBy('poll.createdAt', 'DESC');
 
-    return paginate<PollModel>(queryBuilder, options);
+    return paginate<Poll>(queryBuilder, options);
   }
 }
