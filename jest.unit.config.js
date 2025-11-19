@@ -1,4 +1,3 @@
-const { testMatch } = require('./jest.e2e.config');
 
 module.exports = {
   preset: 'ts-jest',
