@@ -30,7 +30,7 @@ export class TestDatabase {
     process.env.ENVIRONMENT = 'testing';
 
     console.log(
-      `PostgreSQL with PostGIS started at ${this.container.getHost()}:${this.container.getPort()}`,
+      `PostgreSQL started at ${this.container.getHost()}:${this.container.getPort()}`,
     );
   }
 
