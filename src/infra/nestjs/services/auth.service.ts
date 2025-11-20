@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Injectable,
   InternalServerErrorException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import BcryptHasher from '~/infra/cryptography/bcrypt-hasher';
@@ -36,7 +37,7 @@ export default class AuthorizationService {
       return await this.useCase.execute(login);
     } catch (error) {
       if (error instanceof WrongCredentialsError)
-        throw new BadRequestException(error);
+        throw new UnauthorizedException('Credentials are not valid.');
 
       throw new InternalServerErrorException(error);
     }

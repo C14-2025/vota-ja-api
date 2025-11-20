@@ -14,7 +14,7 @@ export default class AuthenticateUseCase {
 
   async validateUser(email: string, password: string) {
     if (!email || !password) {
-      return false;
+      throw new WrongCredentialsError();
     }
     return true;
   }
