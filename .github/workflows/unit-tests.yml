@@ -33,10 +33,7 @@ jobs:
         run: npm ci
 
       - name: Run unit tests
-        run: npm test
-
-      - name: Run unit tests with coverage
-        run: npm run test:coverage
+        run: npm run test:unit
 
       - name: Upload unit test coverage
         if: success()
