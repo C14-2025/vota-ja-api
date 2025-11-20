@@ -6,6 +6,9 @@ import {
   Request,
   Get,
   Param,
+  Query,
+  DefaultValuePipe,
+  ParseIntPipe,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -13,7 +16,9 @@ import {
   ApiTags,
   ApiOkResponse,
   ApiParam,
+  ApiQuery,
 } from '@nestjs/swagger';
+import { Pagination } from 'nestjs-typeorm-paginate';
 import PollService from '../services/poll.service';
 import PollResponseDTO from '~/infra/dtos/poll/PollResponseDTO';
 import PollWithVotesResponseDTO from '~/infra/dtos/poll/PollWithVotesResponseDTO';
@@ -21,6 +26,7 @@ import PollCreateDTO from '~/infra/dtos/poll/PollCreateDTO';
 import JwtAuthGuard from '../auth/jwt-auth.guard';
 import OptionalJwtAuthGuard from '../auth/optional-jwt-auth.guard';
 import ApiCommonResponses from '~/infra/swagger/swagger-common-responses.decorator';
+import Poll from '~/domain/entities/Poll';
 
 @ApiTags('polls')
 @Controller('/polls')
@@ -40,6 +46,31 @@ export default class PollController {
     @Body() body: PollCreateDTO,
   ): Promise<PollResponseDTO> {
     return this.pollService.createPoll(req.user.id, body);
+  }
+
+  @Get()
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    type: Number,
+    description: 'Page number (default: 1)',
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    type: Number,
+    description: 'Items per page (default: 10)',
+  })
+  @ApiOkResponse({
+    description: 'List all polls with pagination',
+    type: Poll,
+    isArray: true,
+  })
+  async getAllPolls(
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
+  ): Promise<Pagination<Poll>> {
+    return this.pollService.getAllPolls({ page, limit });
   }
 
   @UseGuards(OptionalJwtAuthGuard)

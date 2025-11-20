@@ -1,6 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import {
+  paginate,
+  Pagination,
+  IPaginationOptions,
+} from 'nestjs-typeorm-paginate';
 
 import Poll from '~/domain/entities/Poll';
 import { IPollRepository } from '~/domain/interfaces/repositories/IPollRepository';
@@ -81,5 +86,15 @@ export default class PollRepository implements IPollRepository {
       totalVotes,
       options,
     };
+  }
+
+  async findAll(options: IPaginationOptions): Promise<Pagination<Poll>> {
+    const queryBuilder = this.pollRepository
+      .createQueryBuilder('poll')
+      .leftJoinAndSelect('poll.creator', 'creator')
+      .leftJoinAndSelect('poll.options', 'options')
+      .orderBy('poll.createdAt', 'DESC');
+
+    return paginate<Poll>(queryBuilder, options);
   }
 }

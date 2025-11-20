@@ -4,22 +4,26 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
+import { IPaginationOptions, Pagination } from 'nestjs-typeorm-paginate';
 import PollRepository from '~/infra/databases/typeorm/repositories/poll.repository';
 import UserRepository from '~/infra/databases/typeorm/repositories/user.repository';
 import VoteRepository from '~/infra/databases/typeorm/repositories/vote.repository';
 import CreatePollUseCase from '~/domain/use-cases/poll/create';
 import GetPollByIdUseCase from '~/domain/use-cases/poll/get-by-id';
+import GetAllPollsUseCase from '~/domain/use-cases/poll/get-all';
 import { ICreatePoll } from '~/domain/interfaces/dtos/poll/ICreatePoll';
 import PollResponseDTO from '~/infra/dtos/poll/PollResponseDTO';
 import PollWithVotesResponseDTO from '~/infra/dtos/poll/PollWithVotesResponseDTO';
 import UserNotFoundError from '~/domain/errors/UserNotFoundError';
 import PollNotFoundError from '~/domain/errors/PollNotFoundError';
 import UnauthorizedPollAccessError from '~/domain/errors/UnauthorizedPollAccessError';
+import Poll from '~/domain/entities/Poll';
 
 @Injectable()
 export default class PollService {
   createPollUseCase: CreatePollUseCase;
   getPollByIdUseCase: GetPollByIdUseCase;
+  getAllPollsUseCase: GetAllPollsUseCase;
 
   constructor(
     private readonly pollRepository: PollRepository,
@@ -34,6 +38,7 @@ export default class PollService {
       this.pollRepository,
       this.voteRepository,
     );
+    this.getAllPollsUseCase = new GetAllPollsUseCase(this.pollRepository);
   }
 
   async createPoll(
@@ -98,6 +103,14 @@ export default class PollService {
         throw new UnauthorizedException(error.message);
       }
 
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async getAllPolls(options: IPaginationOptions): Promise<Pagination<Poll>> {
+    try {
+      return await this.getAllPollsUseCase.execute(options);
+    } catch (error) {
       throw new InternalServerErrorException(error);
     }
   }
