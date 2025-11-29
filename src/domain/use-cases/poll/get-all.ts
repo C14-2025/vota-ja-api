@@ -5,7 +5,10 @@ import Poll from '~/domain/entities/Poll';
 export default class GetAllPollsUseCase {
   constructor(private pollRepository: IPollRepository) {}
 
-  async execute(options: IPaginationOptions): Promise<Pagination<Poll>> {
-    return this.pollRepository.findAll(options);
+  async execute(
+    options: IPaginationOptions,
+    search?: string,
+  ): Promise<Pagination<Poll>> {
+    return this.pollRepository.findAll(options, search);
   }
 }
