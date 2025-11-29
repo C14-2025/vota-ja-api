@@ -8,6 +8,7 @@ import { IVoteRepository } from '~/domain/interfaces/repositories/IVoteRepositor
 import { IUserRepository } from '~/domain/interfaces/repositories/IUserRepository';
 import { IPollRepository } from '~/domain/interfaces/repositories/IPollRepository';
 import { IPollOptionRepository } from '~/domain/interfaces/repositories/IPollOptionRepository';
+import { IPollRealtimePort } from '~/domain/ports/IPollRealtimePort';
 
 export default class CreateVoteUseCase {
   constructor(
@@ -15,43 +16,58 @@ export default class CreateVoteUseCase {
     private readonly userRepository: IUserRepository,
     private readonly pollRepository: IPollRepository,
     private readonly pollOptionRepository: IPollOptionRepository,
+    private readonly pollRealtimePort: IPollRealtimePort,
   ) {}
 
   async execute(userId: string, data: ICreateVote): Promise<Votes> {
-    // Verifica se o usuário existe
     const user = await this.userRepository.getById(userId);
     if (!user) {
       throw new UserNotFoundError();
     }
 
-    // Verifica se o poll existe
     const poll = await this.pollRepository.getById(data.pollId);
     if (!poll) {
       throw new PollNotFoundError();
     }
 
-    // Verifica se a opção existe
     const option = await this.pollOptionRepository.getById(data.optionId);
     if (!option) {
       throw new PollOptionNotFoundError();
     }
 
-    // Verifica se o usuário já votou neste poll
     const existingVote = await this.voteRepository.findByUserAndPoll(
       userId,
       data.pollId,
     );
+
     if (existingVote) {
       throw new UserAlreadyVotedError();
     }
 
-    // Cria o voto
     const vote = new Votes({
       voter: user,
       poll: poll,
       option: option,
     });
 
-    return await this.voteRepository.create(vote);
+    const saveVote = await this.voteRepository.create(vote);
+
+    const pollResults = await this.pollRepository.getResultsById(data.pollId);
+
+    const votedOption = pollResults.options.find(
+      opt => opt.optionId === data.optionId,
+    );
+
+    if (votedOption) {
+      this.pollRealtimePort.publishPollUpdate(data.pollId, {
+        pollId: data.pollId,
+        optionId: data.optionId,
+        totalVotes: pollResults.totalVotes,
+        optionVotes: votedOption.voteCount,
+        percentage: votedOption.percentage,
+      });
+    }
+
+    return saveVote;
   }
 }

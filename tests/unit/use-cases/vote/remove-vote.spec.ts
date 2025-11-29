@@ -1,5 +1,7 @@
 import RemoveVoteUseCase from '../../../../src/domain/use-cases/vote/remove';
 import { IVoteRepository } from '../../../../src/domain/interfaces/repositories/IVoteRepository';
+import { IPollRepository } from '../../../../src/domain/interfaces/repositories/IPollRepository';
+import { IPollRealtimePort } from '../../../../src/domain/ports/IPollRealtimePort';
 import VoteNotFoundError from '../../../../src/domain/errors/VoteNotFoundError';
 import Votes from '../../../../src/domain/entities/Vote';
 import User from '../../../../src/domain/entities/User';
@@ -9,6 +11,8 @@ import PollOption from '../../../../src/domain/entities/PollOption';
 describe('RemoveVoteUseCase', () => {
   let removeVoteUseCase: RemoveVoteUseCase;
   let voteRepository: jest.Mocked<IVoteRepository>;
+  let pollRepository: jest.Mocked<IPollRepository>;
+  let pollRealtimePort: jest.Mocked<IPollRealtimePort>;
 
   beforeEach(() => {
     voteRepository = {
@@ -18,7 +22,19 @@ describe('RemoveVoteUseCase', () => {
       delete: jest.fn(),
     };
 
-    removeVoteUseCase = new RemoveVoteUseCase(voteRepository);
+    pollRepository = {
+      getResultsById: jest.fn(),
+    } as any;
+
+    pollRealtimePort = {
+      publishPollUpdate: jest.fn(),
+    } as any;
+
+    removeVoteUseCase = new RemoveVoteUseCase(
+      voteRepository,
+      pollRepository,
+      pollRealtimePort,
+    );
   });
 
   describe('execute', () => {
@@ -47,7 +63,6 @@ describe('RemoveVoteUseCase', () => {
     const mockOption = new PollOption({
       id: 'option-123',
       text: 'TypeScript',
-      poll: mockPoll,
       createdAt: new Date('2023-10-10T10:00:00.000Z'),
     });
 
@@ -59,9 +74,31 @@ describe('RemoveVoteUseCase', () => {
       updatedAt: new Date('2023-10-15T10:00:00.000Z'),
     };
 
-    it('should remove a vote successfully when vote exists', async () => {
+    const mockPollResults = {
+      pollId,
+      title: 'Favorite Programming Language',
+      description: 'Vote for your favorite language',
+      totalVotes: 10,
+      options: [
+        {
+          optionId: 'option-123',
+          optionText: 'TypeScript',
+          voteCount: 5,
+          percentage: 50,
+        },
+        {
+          optionId: 'option-456',
+          optionText: 'JavaScript',
+          voteCount: 5,
+          percentage: 50,
+        },
+      ],
+    };
+
+    it('should remove a vote successfully and publish realtime update', async () => {
       voteRepository.findByUserAndPoll.mockResolvedValue(mockVote);
       voteRepository.delete.mockResolvedValue(undefined);
+      pollRepository.getResultsById.mockResolvedValue(mockPollResults);
 
       await removeVoteUseCase.execute(userId, pollId);
 
@@ -72,6 +109,16 @@ describe('RemoveVoteUseCase', () => {
       );
       expect(voteRepository.delete).toHaveBeenCalledTimes(1);
       expect(voteRepository.delete).toHaveBeenCalledWith(userId, pollId);
+      expect(pollRepository.getResultsById).toHaveBeenCalledTimes(1);
+      expect(pollRepository.getResultsById).toHaveBeenCalledWith(pollId);
+      expect(pollRealtimePort.publishPollUpdate).toHaveBeenCalledTimes(1);
+      expect(pollRealtimePort.publishPollUpdate).toHaveBeenCalledWith(pollId, {
+        pollId,
+        optionId: 'option-123',
+        totalVotes: 10,
+        optionVotes: 5,
+        percentage: 50,
+      });
     });
 
     it('should throw VoteNotFoundError when vote does not exist', async () => {
@@ -87,6 +134,8 @@ describe('RemoveVoteUseCase', () => {
         pollId,
       );
       expect(voteRepository.delete).not.toHaveBeenCalled();
+      expect(pollRepository.getResultsById).not.toHaveBeenCalled();
+      expect(pollRealtimePort.publishPollUpdate).not.toHaveBeenCalled();
     });
 
     it('should throw VoteNotFoundError with correct message', async () => {
@@ -106,6 +155,8 @@ describe('RemoveVoteUseCase', () => {
       );
 
       expect(voteRepository.delete).not.toHaveBeenCalled();
+      expect(pollRepository.getResultsById).not.toHaveBeenCalled();
+      expect(pollRealtimePort.publishPollUpdate).not.toHaveBeenCalled();
     });
 
     it('should propagate repository errors from delete', async () => {
@@ -119,6 +170,24 @@ describe('RemoveVoteUseCase', () => {
 
       expect(voteRepository.findByUserAndPoll).toHaveBeenCalledTimes(1);
       expect(voteRepository.delete).toHaveBeenCalledTimes(1);
+      expect(pollRepository.getResultsById).not.toHaveBeenCalled();
+      expect(pollRealtimePort.publishPollUpdate).not.toHaveBeenCalled();
+    });
+
+    it('should propagate repository errors from getResultsById', async () => {
+      const error = new Error('Failed to get poll results');
+      voteRepository.findByUserAndPoll.mockResolvedValue(mockVote);
+      voteRepository.delete.mockResolvedValue(undefined);
+      pollRepository.getResultsById.mockRejectedValue(error);
+
+      await expect(removeVoteUseCase.execute(userId, pollId)).rejects.toThrow(
+        'Failed to get poll results',
+      );
+
+      expect(voteRepository.findByUserAndPoll).toHaveBeenCalledTimes(1);
+      expect(voteRepository.delete).toHaveBeenCalledTimes(1);
+      expect(pollRepository.getResultsById).toHaveBeenCalledTimes(1);
+      expect(pollRealtimePort.publishPollUpdate).not.toHaveBeenCalled();
     });
 
     it('should handle different user and poll IDs', async () => {
@@ -127,6 +196,7 @@ describe('RemoveVoteUseCase', () => {
 
       voteRepository.findByUserAndPoll.mockResolvedValue(mockVote);
       voteRepository.delete.mockResolvedValue(undefined);
+      pollRepository.getResultsById.mockResolvedValue(mockPollResults);
 
       await removeVoteUseCase.execute(differentUserId, differentPollId);
 
@@ -138,6 +208,26 @@ describe('RemoveVoteUseCase', () => {
         differentUserId,
         differentPollId,
       );
+      expect(pollRepository.getResultsById).toHaveBeenCalledWith(
+        differentPollId,
+      );
+    });
+
+    it('should not publish update when voted option is not found in results', async () => {
+      const mockVoteWithDifferentOption: Votes = {
+        ...mockVote,
+        option: { ...mockOption, id: 'non-existent-option' },
+      };
+
+      voteRepository.findByUserAndPoll.mockResolvedValue(
+        mockVoteWithDifferentOption,
+      );
+      voteRepository.delete.mockResolvedValue(undefined);
+      pollRepository.getResultsById.mockResolvedValue(mockPollResults);
+
+      await removeVoteUseCase.execute(userId, pollId);
+
+      expect(pollRealtimePort.publishPollUpdate).not.toHaveBeenCalled();
     });
   });
 });

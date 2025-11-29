@@ -110,9 +110,10 @@ export default class PollService {
   async getAllPolls(
     options: IPaginationOptions,
     search?: string,
+    userId?: string,
   ): Promise<Pagination<Poll>> {
     try {
-      return await this.getAllPollsUseCase.execute(options, search);
+      return await this.getAllPollsUseCase.execute(options, search, userId);
     } catch (error) {
       throw new InternalServerErrorException(error);
     }

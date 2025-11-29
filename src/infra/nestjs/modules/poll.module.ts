@@ -8,6 +8,8 @@ import UserRepository from '~/infra/databases/typeorm/repositories/user.reposito
 import UserModel from '~/infra/databases/models/User';
 import VoteRepository from '~/infra/databases/typeorm/repositories/vote.repository';
 import VoteModel from '~/infra/databases/models/Vote';
+import { PollRealtimeAdapter } from '~/infra/websocket/poll-realtime-adapter';
+import { PollGateway } from '~/infra/websocket/poll.gateway';
 
 export const POLL_REPOSITORY_TOKEN = 'IPollRepository';
 
@@ -19,11 +21,18 @@ export const POLL_REPOSITORY_TOKEN = 'IPollRepository';
     PollRepository,
     UserRepository,
     VoteRepository,
+    PollRealtimeAdapter,
+    PollGateway,
     {
       provide: POLL_REPOSITORY_TOKEN,
       useClass: PollRepository,
     },
   ],
-  exports: [PollService, POLL_REPOSITORY_TOKEN],
+  exports: [
+    PollService,
+    POLL_REPOSITORY_TOKEN,
+    PollRealtimeAdapter,
+    PollGateway,
+  ],
 })
 export default class PollModule {}

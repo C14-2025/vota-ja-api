@@ -1,6 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
-import { ThrottlerModule } from '@nestjs/throttler';
 import AppModule from '~/infra/nestjs/modules/app.module';
 
 export class TestAppFactory {
@@ -18,7 +17,7 @@ export class TestAppFactory {
         transform: true,
       }),
     );
-
+    app.useLogger(false);
     await app.init();
     return app;
   }

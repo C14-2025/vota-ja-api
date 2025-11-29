@@ -14,8 +14,9 @@ describe('GetAllPollsUseCase', () => {
     pollRepository = {
       create: jest.fn(),
       getById: jest.fn(),
+      getResultsById: jest.fn(),
       findAll: jest.fn(),
-    };
+    } as any;
 
     getAllPollsUseCase = new GetAllPollsUseCase(pollRepository);
   });
@@ -98,6 +99,7 @@ describe('GetAllPollsUseCase', () => {
           limit: 10,
         },
         undefined,
+        undefined,
       );
 
       expect(result).toEqual(mockPagination);
@@ -130,6 +132,7 @@ describe('GetAllPollsUseCase', () => {
           limit: 2,
         },
         undefined,
+        undefined,
       );
 
       expect(result).toEqual(mockPagination);
@@ -161,6 +164,7 @@ describe('GetAllPollsUseCase', () => {
           page: 2,
           limit: 2,
         },
+        undefined,
         undefined,
       );
 
@@ -268,6 +272,7 @@ describe('GetAllPollsUseCase', () => {
           limit: 100,
         },
         undefined,
+        undefined,
       );
       expect(result.meta.itemsPerPage).toBe(100);
     });
@@ -320,6 +325,7 @@ describe('GetAllPollsUseCase', () => {
           limit: 10,
         },
         searchTerm,
+        undefined,
       );
 
       expect(result.items).toHaveLength(1);
@@ -353,6 +359,7 @@ describe('GetAllPollsUseCase', () => {
           limit: 10,
         },
         searchTerm,
+        undefined,
       );
 
       expect(result.items).toHaveLength(0);
@@ -386,6 +393,7 @@ describe('GetAllPollsUseCase', () => {
           limit: 2,
         },
         searchTerm,
+        undefined,
       );
 
       expect(result.items).toHaveLength(2);
@@ -420,9 +428,80 @@ describe('GetAllPollsUseCase', () => {
           limit: 10,
         },
         searchTerm,
+        undefined,
       );
 
       expect(result.items).toHaveLength(3);
+    });
+
+    it('should filter polls by userId when provided', async () => {
+      const userId = mockUser.id;
+      const mockPagination: Pagination<Poll> = {
+        items: mockPolls,
+        meta: {
+          itemCount: 3,
+          totalItems: 3,
+          itemsPerPage: 10,
+          totalPages: 1,
+          currentPage: 1,
+        },
+      };
+
+      pollRepository.findAll.mockResolvedValue(mockPagination);
+
+      const result = await getAllPollsUseCase.execute(
+        { page: 1, limit: 10 },
+        undefined,
+        userId,
+      );
+
+      expect(pollRepository.findAll).toHaveBeenCalledTimes(1);
+      expect(pollRepository.findAll).toHaveBeenCalledWith(
+        {
+          page: 1,
+          limit: 10,
+        },
+        undefined,
+        userId,
+      );
+
+      expect(result.items).toHaveLength(3);
+    });
+
+    it('should filter polls by userId with search term', async () => {
+      const userId = mockUser.id;
+      const searchTerm = 'First';
+      const mockPagination: Pagination<Poll> = {
+        items: [mockPolls[0]],
+        meta: {
+          itemCount: 1,
+          totalItems: 1,
+          itemsPerPage: 10,
+          totalPages: 1,
+          currentPage: 1,
+        },
+      };
+
+      pollRepository.findAll.mockResolvedValue(mockPagination);
+
+      const result = await getAllPollsUseCase.execute(
+        { page: 1, limit: 10 },
+        searchTerm,
+        userId,
+      );
+
+      expect(pollRepository.findAll).toHaveBeenCalledTimes(1);
+      expect(pollRepository.findAll).toHaveBeenCalledWith(
+        {
+          page: 1,
+          limit: 10,
+        },
+        searchTerm,
+        userId,
+      );
+
+      expect(result.items).toHaveLength(1);
+      expect(result.items[0].title).toBe('First Poll');
     });
   });
 });
