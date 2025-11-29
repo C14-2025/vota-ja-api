@@ -9,5 +9,6 @@ export interface IPollRepository {
   findAll(
     options: IPaginationOptions,
     search?: string,
+    userId?: string,
   ): Promise<Pagination<Poll>>;
 }

@@ -48,6 +48,8 @@ export default class PollController {
     return this.pollService.createPoll(req.user.id, body);
   }
 
+  @UseGuards(OptionalJwtAuthGuard)
+  @ApiBearerAuth()
   @Get()
   @ApiQuery({
     name: 'page',
@@ -76,8 +78,10 @@ export default class PollController {
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
     @Query('search') search: string,
+    @Request() req,
   ): Promise<Pagination<Poll>> {
-    return this.pollService.getAllPolls({ page, limit }, search);
+    const userId = req.user?.id;
+    return this.pollService.getAllPolls({ page, limit }, search, userId);
   }
 
   @UseGuards(OptionalJwtAuthGuard)

@@ -8,7 +8,8 @@ export default class GetAllPollsUseCase {
   async execute(
     options: IPaginationOptions,
     search?: string,
+    userId?: string,
   ): Promise<Pagination<Poll>> {
-    return this.pollRepository.findAll(options, search);
+    return this.pollRepository.findAll(options, search, userId);
   }
 }

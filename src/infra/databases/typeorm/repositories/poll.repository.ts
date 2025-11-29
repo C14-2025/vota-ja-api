@@ -91,11 +91,16 @@ export default class PollRepository implements IPollRepository {
   async findAll(
     options: IPaginationOptions,
     search?: string,
+    userId?: string,
   ): Promise<Pagination<Poll>> {
     const queryBuilder = this.pollRepository
       .createQueryBuilder('poll')
       .leftJoinAndSelect('poll.creator', 'creator')
       .orderBy('poll.createdAt', 'DESC');
+
+    if (!userId) {
+      queryBuilder.andWhere('poll.type = :type', { type: 'public' });
+    }
 
     if (search && search.trim() !== '') {
       queryBuilder.andWhere(
