@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, In } from 'typeorm';
 import {
   paginate,
   Pagination,
@@ -95,7 +95,6 @@ export default class PollRepository implements IPollRepository {
     const queryBuilder = this.pollRepository
       .createQueryBuilder('poll')
       .leftJoinAndSelect('poll.creator', 'creator')
-      .leftJoinAndSelect('poll.options', 'options')
       .orderBy('poll.createdAt', 'DESC');
 
     if (search && search.trim() !== '') {
@@ -105,6 +104,24 @@ export default class PollRepository implements IPollRepository {
       );
     }
 
-    return paginate<Poll>(queryBuilder, options);
+    const paginatedResult = await paginate<Poll>(queryBuilder, options);
+
+    if (paginatedResult.items.length > 0) {
+      const pollIds = paginatedResult.items.map(poll => poll.id);
+      const pollsWithOptions = await this.pollRepository.find({
+        where: { id: In(pollIds) },
+        relations: ['options'],
+      });
+
+      const optionsMap = new Map(
+        pollsWithOptions.map(poll => [poll.id, poll.options]),
+      );
+
+      paginatedResult.items.forEach(poll => {
+        poll.options = optionsMap.get(poll.id) || [];
+      });
+    }
+
+    return paginatedResult;
   }
 }
