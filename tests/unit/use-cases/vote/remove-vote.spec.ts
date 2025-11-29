@@ -63,7 +63,6 @@ describe('RemoveVoteUseCase', () => {
     const mockOption = new PollOption({
       id: 'option-123',
       text: 'TypeScript',
-      poll: mockPoll,
       createdAt: new Date('2023-10-10T10:00:00.000Z'),
     });
 
