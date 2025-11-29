@@ -61,6 +61,12 @@ export default class PollController {
     type: Number,
     description: 'Items per page (default: 10)',
   })
+  @ApiQuery({
+    name: 'search',
+    required: false,
+    type: 'string',
+    description: 'Search by title and description',
+  })
   @ApiOkResponse({
     description: 'List all polls with pagination',
     type: Poll,
@@ -69,8 +75,9 @@ export default class PollController {
   async getAllPolls(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
+    @Query('search') search: string,
   ): Promise<Pagination<Poll>> {
-    return this.pollService.getAllPolls({ page, limit });
+    return this.pollService.getAllPolls({ page, limit }, search);
   }
 
   @UseGuards(OptionalJwtAuthGuard)
