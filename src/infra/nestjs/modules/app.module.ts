@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import AppController from '../exceptions/controllers/app.controller';
 import { APP_INTERCEPTOR, APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { config } from '~/infra/config';
@@ -13,6 +12,9 @@ import VoteModule from './vote.module';
 import TypeOrmModuleConfig from '../../databases/typeorm';
 import LoggerInterceptor from '../interceptors/logger.interceptor';
 import AllExceptionsFilter from '../exceptions/all-exceptions-filter';
+import AppController from '../controllers/app.controller';
+import { PollGateway } from '~/infra/websocket/poll.gateway';
+import { PollRealtimeAdapter } from '~/infra/websocket/poll-realtime-adapter';
 
 @Module({
   imports: [
@@ -31,6 +33,8 @@ import AllExceptionsFilter from '../exceptions/all-exceptions-filter';
     { provide: APP_INTERCEPTOR, useClass: LoggerInterceptor },
     { provide: APP_FILTER, useClass: AllExceptionsFilter },
     { provide: APP_GUARD, useClass: ThrottlerGuard },
+    PollGateway,
+    PollRealtimeAdapter,
   ],
 })
 export default class AppModule {}
