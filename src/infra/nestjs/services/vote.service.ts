@@ -39,7 +39,11 @@ export default class VoteService {
       this.pollRealtimeAdapter,
     );
 
-    this.removeVoteUseCase = new RemoveVoteUseCase(this.voteRepository);
+    this.removeVoteUseCase = new RemoveVoteUseCase(
+      this.voteRepository,
+      this.pollRepository,
+      this.pollRealtimeAdapter,
+    );
   }
 
   async createVote(
