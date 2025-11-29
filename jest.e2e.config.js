@@ -14,6 +14,13 @@ module.exports = {
     '^domain/(.*)$': '<rootDir>/src/domain/$1',
   }),
 
+  collectCoverageFrom: [
+    'src/infra/nestjs/controllers/**/*.ts',
+    'src/infra/websocket/**/*.ts',
+  ],
+  coverageDirectory: './coverage/e2e',
+  coverageReporters: ['text', 'lcov', 'html'],
+
   transform: {
     '^.+\\.(t|j)sx?$': [
       '@swc/jest',

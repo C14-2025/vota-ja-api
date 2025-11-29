@@ -1,4 +1,3 @@
-
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
@@ -7,14 +6,8 @@ module.exports = {
   transform: {
     '^.+\\.(t|j)s$': 'ts-jest',
   },
-  collectCoverageFrom: [
-    'src/**/*.(t|j)s',
-    '!src/**/*.d.ts',
-    '!src/main.ts',
-    '!src/**/*.module.ts',
-    '!src/**/index.ts',
-  ],
-  coverageDirectory: './coverage',
+  collectCoverageFrom: ['src/domain/use-cases/**/*.ts'],
+  coverageDirectory: './coverage/unit',
   coverageReporters: ['text', 'lcov', 'html'],
   testPathIgnorePatterns: ['/node_modules/', '/dist/'],
   moduleNameMapper: {
