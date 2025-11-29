@@ -14,8 +14,9 @@ describe('GetAllPollsUseCase', () => {
     pollRepository = {
       create: jest.fn(),
       getById: jest.fn(),
+      getResultsById: jest.fn(),
       findAll: jest.fn(),
-    };
+    } as any;
 
     getAllPollsUseCase = new GetAllPollsUseCase(pollRepository);
   });
