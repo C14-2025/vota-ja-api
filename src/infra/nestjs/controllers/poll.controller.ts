@@ -65,7 +65,7 @@ export default class PollController {
     name: 'search',
     required: false,
     type: 'string',
-    description: 'Search by name and description',
+    description: 'Search by title and description',
   })
   @ApiOkResponse({
     description: 'List all polls with pagination',
