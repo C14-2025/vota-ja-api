@@ -29,7 +29,6 @@ export default class CreatePollUseCase {
       optionText =>
         new PollOption({
           text: optionText,
-          poll,
         }),
     );
 

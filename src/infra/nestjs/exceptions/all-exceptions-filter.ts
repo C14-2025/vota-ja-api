@@ -14,6 +14,14 @@ import { IErrorResponse } from '~/domain/interfaces/IErroResponse';
 @Catch()
 export default class AllExceptionsFilter implements ExceptionFilter {
   catch(exception: HttpException, host: ArgumentsHost) {
+    if (process.env.NODE_ENV === 'local') {
+      const ctx = host.switchToHttp();
+      const response = ctx.getResponse<Response>();
+
+      const error = this.getHttpException(exception);
+      return response.status(error.statusCode).json(error);
+    }
+
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
@@ -22,7 +30,9 @@ export default class AllExceptionsFilter implements ExceptionFilter {
 
     const errorResponse = this.getErrorResponse(error, request);
     const errorLog = this.getErrorLog(errorResponse, request, exception);
+
     Logger.error(errorLog, 'All Exception FIlter');
+
     response.status(error.statusCode).json(error);
   }
 
