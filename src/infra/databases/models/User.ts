@@ -5,7 +5,7 @@ import User from '~/domain/entities/User';
 
 @Entity('users')
 export default class UserModel extends BaseModel implements User {
-  @Column({ nullable: false, unique: true })
+  @Column({ nullable: false })
   name: string;
 
   @Column({ nullable: false, unique: true })
