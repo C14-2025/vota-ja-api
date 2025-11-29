@@ -9,8 +9,6 @@ export default class PollOption {
 
   id: string;
 
-  poll: Poll;
-
   text: string;
 
   createdAt: Date;
