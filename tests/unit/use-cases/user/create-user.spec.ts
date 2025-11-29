@@ -96,6 +96,19 @@ describe('CreateUserUseCase', () => {
       expect(userRepository.create).toHaveBeenCalledTimes(1);
     });
 
+    it('should throw error when trying to create a new user', async () => {
+      const userWithLastLogin = {
+        ...mockCreatedUser,
+        lastLogin: new Date('2023-10-15T14:30:00.000Z'),
+      };
+
+      userRepository.findByEmail.mockResolvedValue(userWithLastLogin);
+
+      await expect(
+        createUserUseCase.execute(mockCreateUserDTO),
+      ).rejects.toThrow('User already exists with this email');
+    });
+
     it('should handle user creation with all fields', async () => {
       const userWithLastLogin = {
         ...mockCreatedUser,
