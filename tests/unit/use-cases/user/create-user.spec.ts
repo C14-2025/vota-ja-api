@@ -2,10 +2,12 @@ import CreateUserUseCase from '../../../../src/domain/use-cases/user/create-user
 import { IUserRepository } from '../../../../src/domain/interfaces/repositories/IUserRepository';
 import User from '../../../../src/domain/entities/User';
 import ICreateUserDTO from '../../../../src/domain/interfaces/dtos/user/ICreateUserDTO';
+import { HashGenerator } from '../../../../src/domain/cryptography/hash-generator';
 
 describe('CreateUserUseCase', () => {
   let createUserUseCase: CreateUserUseCase;
   let userRepository: jest.Mocked<IUserRepository>;
+  let hashGenerator: jest.Mocked<HashGenerator>;
 
   beforeEach(() => {
     userRepository = {
@@ -15,10 +17,18 @@ describe('CreateUserUseCase', () => {
       findAll: jest.fn(),
     };
 
-    createUserUseCase = new CreateUserUseCase(userRepository);
+    hashGenerator = {
+      hash: jest.fn(),
+    } as unknown as jest.Mocked<HashGenerator>;
+
+    createUserUseCase = new CreateUserUseCase(userRepository, hashGenerator);
   });
 
   describe('execute', () => {
+    beforeEach(() => {
+      hashGenerator.hash.mockResolvedValue('hashedPassword123');
+    });
+
     const mockCreateUserDTO: ICreateUserDTO = {
       name: 'John Doe',
       email: 'john.doe@example.com',

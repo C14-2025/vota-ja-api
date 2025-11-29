@@ -92,10 +92,13 @@ describe('GetAllPollsUseCase', () => {
       const result = await getAllPollsUseCase.execute({ page: 1, limit: 10 });
 
       expect(pollRepository.findAll).toHaveBeenCalledTimes(1);
-      expect(pollRepository.findAll).toHaveBeenCalledWith({
-        page: 1,
-        limit: 10,
-      });
+      expect(pollRepository.findAll).toHaveBeenCalledWith(
+        {
+          page: 1,
+          limit: 10,
+        },
+        undefined,
+      );
 
       expect(result).toEqual(mockPagination);
       expect(result.items).toHaveLength(3);
@@ -121,10 +124,13 @@ describe('GetAllPollsUseCase', () => {
       const result = await getAllPollsUseCase.execute({ page: 1, limit: 2 });
 
       expect(pollRepository.findAll).toHaveBeenCalledTimes(1);
-      expect(pollRepository.findAll).toHaveBeenCalledWith({
-        page: 1,
-        limit: 2,
-      });
+      expect(pollRepository.findAll).toHaveBeenCalledWith(
+        {
+          page: 1,
+          limit: 2,
+        },
+        undefined,
+      );
 
       expect(result).toEqual(mockPagination);
       expect(result.items).toHaveLength(2);
@@ -150,10 +156,13 @@ describe('GetAllPollsUseCase', () => {
       const result = await getAllPollsUseCase.execute({ page: 2, limit: 2 });
 
       expect(pollRepository.findAll).toHaveBeenCalledTimes(1);
-      expect(pollRepository.findAll).toHaveBeenCalledWith({
-        page: 2,
-        limit: 2,
-      });
+      expect(pollRepository.findAll).toHaveBeenCalledWith(
+        {
+          page: 2,
+          limit: 2,
+        },
+        undefined,
+      );
 
       expect(result).toEqual(mockPagination);
       expect(result.items).toHaveLength(1);
@@ -253,10 +262,13 @@ describe('GetAllPollsUseCase', () => {
 
       const result = await getAllPollsUseCase.execute({ page: 1, limit: 100 });
 
-      expect(pollRepository.findAll).toHaveBeenCalledWith({
-        page: 1,
-        limit: 100,
-      });
+      expect(pollRepository.findAll).toHaveBeenCalledWith(
+        {
+          page: 1,
+          limit: 100,
+        },
+        undefined,
+      );
       expect(result.meta.itemsPerPage).toBe(100);
     });
 
@@ -279,6 +291,138 @@ describe('GetAllPollsUseCase', () => {
       expect(result.items).toHaveLength(0);
       expect(result.meta.currentPage).toBe(10);
       expect(result.meta.totalItems).toBe(3);
+    });
+
+    it('should search polls by title', async () => {
+      const searchTerm = 'First';
+      const mockPagination: Pagination<Poll> = {
+        items: [mockPolls[0]],
+        meta: {
+          itemCount: 1,
+          totalItems: 1,
+          itemsPerPage: 10,
+          totalPages: 1,
+          currentPage: 1,
+        },
+      };
+
+      pollRepository.findAll.mockResolvedValue(mockPagination);
+
+      const result = await getAllPollsUseCase.execute(
+        { page: 1, limit: 10 },
+        searchTerm,
+      );
+
+      expect(pollRepository.findAll).toHaveBeenCalledTimes(1);
+      expect(pollRepository.findAll).toHaveBeenCalledWith(
+        {
+          page: 1,
+          limit: 10,
+        },
+        searchTerm,
+      );
+
+      expect(result.items).toHaveLength(1);
+      expect(result.items[0].title).toBe('First Poll');
+    });
+
+    it('should search polls and return empty when no matches', async () => {
+      const searchTerm = 'NonExistent';
+      const mockPagination: Pagination<Poll> = {
+        items: [],
+        meta: {
+          itemCount: 0,
+          totalItems: 0,
+          itemsPerPage: 10,
+          totalPages: 0,
+          currentPage: 1,
+        },
+      };
+
+      pollRepository.findAll.mockResolvedValue(mockPagination);
+
+      const result = await getAllPollsUseCase.execute(
+        { page: 1, limit: 10 },
+        searchTerm,
+      );
+
+      expect(pollRepository.findAll).toHaveBeenCalledTimes(1);
+      expect(pollRepository.findAll).toHaveBeenCalledWith(
+        {
+          page: 1,
+          limit: 10,
+        },
+        searchTerm,
+      );
+
+      expect(result.items).toHaveLength(0);
+      expect(result.meta.totalItems).toBe(0);
+    });
+
+    it('should search polls with pagination', async () => {
+      const searchTerm = 'Poll';
+      const mockPagination: Pagination<Poll> = {
+        items: [mockPolls[0], mockPolls[1]],
+        meta: {
+          itemCount: 2,
+          totalItems: 3,
+          itemsPerPage: 2,
+          totalPages: 2,
+          currentPage: 1,
+        },
+      };
+
+      pollRepository.findAll.mockResolvedValue(mockPagination);
+
+      const result = await getAllPollsUseCase.execute(
+        { page: 1, limit: 2 },
+        searchTerm,
+      );
+
+      expect(pollRepository.findAll).toHaveBeenCalledTimes(1);
+      expect(pollRepository.findAll).toHaveBeenCalledWith(
+        {
+          page: 1,
+          limit: 2,
+        },
+        searchTerm,
+      );
+
+      expect(result.items).toHaveLength(2);
+      expect(result.meta.totalPages).toBe(2);
+      expect(result.meta.currentPage).toBe(1);
+    });
+
+    it('should handle empty search string', async () => {
+      const searchTerm = '';
+      const mockPagination: Pagination<Poll> = {
+        items: mockPolls,
+        meta: {
+          itemCount: 3,
+          totalItems: 3,
+          itemsPerPage: 10,
+          totalPages: 1,
+          currentPage: 1,
+        },
+      };
+
+      pollRepository.findAll.mockResolvedValue(mockPagination);
+
+      const result = await getAllPollsUseCase.execute(
+        { page: 1, limit: 10 },
+        searchTerm,
+      );
+
+      expect(pollRepository.findAll).toHaveBeenCalledTimes(1);
+      expect(pollRepository.findAll).toHaveBeenCalledWith(
+        {
+          page: 1,
+          limit: 10,
+        },
+        searchTerm,
+      );
+
+      expect(result.items).toHaveLength(3);
     });
   });
 });

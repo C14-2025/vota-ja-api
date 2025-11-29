@@ -88,12 +88,22 @@ export default class PollRepository implements IPollRepository {
     };
   }
 
-  async findAll(options: IPaginationOptions): Promise<Pagination<Poll>> {
+  async findAll(
+    options: IPaginationOptions,
+    search?: string,
+  ): Promise<Pagination<Poll>> {
     const queryBuilder = this.pollRepository
       .createQueryBuilder('poll')
       .leftJoinAndSelect('poll.creator', 'creator')
       .leftJoinAndSelect('poll.options', 'options')
       .orderBy('poll.createdAt', 'DESC');
+
+    if (search && search.trim() !== '') {
+      queryBuilder.andWhere(
+        `(poll.title ILIKE :search OR poll.description ILIKE :search)`,
+        { search: `%${search}%` },
+      );
+    }
 
     return paginate<Poll>(queryBuilder, options);
   }
