@@ -3,6 +3,7 @@ import {
   InternalServerErrorException,
   NotFoundException,
   UnauthorizedException,
+  ForbiddenException,
 } from '@nestjs/common';
 import { IPaginationOptions, Pagination } from 'nestjs-typeorm-paginate';
 import PollRepository from '~/infra/databases/typeorm/repositories/poll.repository';
@@ -18,6 +19,7 @@ import UserNotFoundError from '~/domain/errors/UserNotFoundError';
 import PollNotFoundError from '~/domain/errors/PollNotFoundError';
 import UnauthorizedPollAccessError from '~/domain/errors/UnauthorizedPollAccessError';
 import Poll from '~/domain/entities/Poll';
+import { PollStatus } from '~/domain/enums/PollStatus';
 
 @Injectable()
 export default class PollService {
@@ -56,6 +58,21 @@ export default class PollService {
     }
   }
 
+  async closePoll(pollId: string, userId: string): Promise<void> {
+    const poll = await this.pollRepository.getById(pollId);
+
+    if (!poll) {
+      throw new NotFoundException('Poll not found');
+    }
+
+    if (poll.creator.id !== userId) {
+      throw new ForbiddenException('Only the creator can close this poll');
+    }
+
+    poll.status = PollStatus.CLOSED;
+    await this.pollRepository.save(poll);
+  }
+
   async getPollById(
     pollId: string,
     userId?: string,
@@ -76,6 +93,7 @@ export default class PollService {
         title: pollWithVotes.title,
         description: pollWithVotes.description,
         type: pollWithVotes.type,
+        status: pollWithVotes.status,
         options: pollWithVotes.options.map(option => ({
           id: option.id,
           text: option.text,

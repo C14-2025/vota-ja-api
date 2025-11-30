@@ -3,6 +3,7 @@ import {
   InternalServerErrorException,
   NotFoundException,
   ConflictException,
+  BadRequestException,
 } from '@nestjs/common';
 import VoteRepository from '~/infra/databases/typeorm/repositories/vote.repository';
 import UserRepository from '~/infra/databases/typeorm/repositories/user.repository';
@@ -17,6 +18,7 @@ import PollNotFoundError from '~/domain/errors/PollNotFoundError';
 import PollOptionNotFoundError from '~/domain/errors/PollOptionNotFoundError';
 import UserAlreadyVotedError from '~/domain/errors/UserAlreadyVotedError';
 import VoteNotFoundError from '~/domain/errors/VoteNotFoundError';
+import PollClosedError from '~/domain/errors/PollClosedError';
 import { PollRealtimeAdapter } from '~/infra/websocket/poll-realtime-adapter';
 
 @Injectable()
@@ -86,6 +88,10 @@ export default class VoteService {
 
       if (error instanceof UserAlreadyVotedError) {
         throw new ConflictException(error.message);
+      }
+
+      if (error instanceof PollClosedError) {
+        throw new BadRequestException(error.message);
       }
 
       throw new InternalServerErrorException(error);

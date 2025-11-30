@@ -9,6 +9,7 @@ import {
   Query,
   DefaultValuePipe,
   ParseIntPipe,
+  Patch,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -46,6 +47,15 @@ export default class PollController {
     @Body() body: PollCreateDTO,
   ): Promise<PollResponseDTO> {
     return this.pollService.createPoll(req.user.id, body);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @Patch(':id/close')
+  @ApiOkResponse({ description: 'Poll closed successfully' })
+  @ApiCommonResponses({ unauthorized: true, forbidden: true })
+  async closePoll(@Request() req, @Param('id') id: string): Promise<void> {
+    return this.pollService.closePoll(id, req.user.id);
   }
 
   @UseGuards(OptionalJwtAuthGuard)

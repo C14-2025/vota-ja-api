@@ -1,6 +1,7 @@
 import Poll from '~/domain/entities/Poll';
 import User from '~/domain/entities/User';
 import PollTypes from '~/domain/enums/PollTypes';
+import { PollStatus } from '~/domain/enums/PollStatus';
 import BaseModel from './Base';
 import {
   Column,
@@ -24,6 +25,9 @@ export default class PollModel extends BaseModel implements Poll {
 
   @Column('enum', { enum: PollTypes })
   type: PollTypes;
+
+  @Column('enum', { enum: PollStatus, default: PollStatus.OPEN })
+  status: PollStatus;
 
   @OneToMany(() => PollOptionModel, option => option.poll, { cascade: true })
   options: Relation<PollOption[]>;

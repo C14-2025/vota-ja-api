@@ -4,6 +4,7 @@ import { IPaginationOptions, Pagination } from 'nestjs-typeorm-paginate';
 
 export interface IPollRepository {
   create(poll: Poll): Promise<Poll>;
+  save(poll: Poll): Promise<Poll>;
   getById(id: string): Promise<Poll | null>;
   getResultsById(id: string): Promise<IPollResults>;
   findAll(

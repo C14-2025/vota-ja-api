@@ -3,12 +3,14 @@ import UserNotFoundError from '~/domain/errors/UserNotFoundError';
 import PollNotFoundError from '~/domain/errors/PollNotFoundError';
 import PollOptionNotFoundError from '~/domain/errors/PollOptionNotFoundError';
 import UserAlreadyVotedError from '~/domain/errors/UserAlreadyVotedError';
+import PollClosedError from '~/domain/errors/PollClosedError';
 import { ICreateVote } from '~/domain/interfaces/dtos/vote/ICreateVote';
 import { IVoteRepository } from '~/domain/interfaces/repositories/IVoteRepository';
 import { IUserRepository } from '~/domain/interfaces/repositories/IUserRepository';
 import { IPollRepository } from '~/domain/interfaces/repositories/IPollRepository';
 import { IPollOptionRepository } from '~/domain/interfaces/repositories/IPollOptionRepository';
 import { IPollRealtimePort } from '~/domain/ports/IPollRealtimePort';
+import { PollStatus } from '~/domain/enums/PollStatus';
 
 export default class CreateVoteUseCase {
   constructor(
@@ -28,6 +30,10 @@ export default class CreateVoteUseCase {
     const poll = await this.pollRepository.getById(data.pollId);
     if (!poll) {
       throw new PollNotFoundError();
+    }
+
+    if (poll.status === PollStatus.CLOSED) {
+      throw new PollClosedError();
     }
 
     const option = await this.pollOptionRepository.getById(data.optionId);

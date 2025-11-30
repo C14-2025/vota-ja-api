@@ -7,6 +7,7 @@ import PollOption from '../../../../src/domain/entities/PollOption';
 import PollTypes from '../../../../src/domain/enums/PollTypes';
 import PollNotFoundError from '../../../../src/domain/errors/PollNotFoundError';
 import UnauthorizedPollAccessError from '../../../../src/domain/errors/UnauthorizedPollAccessError';
+import { PollStatus } from '../../../../src/domain/enums/PollStatus';
 
 describe('GetPollByIdUseCase', () => {
   let getPollByIdUseCase: GetPollByIdUseCase;
@@ -56,6 +57,7 @@ describe('GetPollByIdUseCase', () => {
       title: 'Public Poll',
       description: 'This is a public poll',
       type: PollTypes.PUBLIC,
+      status: PollStatus.OPEN,
       options: [mockPollOption1, mockPollOption2],
       creator: mockUser,
       createdAt: new Date('2023-10-10T10:00:00.000Z'),
@@ -67,6 +69,7 @@ describe('GetPollByIdUseCase', () => {
       title: 'Private Poll',
       description: 'This is a private poll',
       type: PollTypes.PRIVATE,
+      status: PollStatus.OPEN,
       options: [mockPollOption1, mockPollOption2],
       creator: mockUser,
       createdAt: new Date('2023-10-10T10:00:00.000Z'),

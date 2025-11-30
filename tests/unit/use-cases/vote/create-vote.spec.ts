@@ -14,6 +14,7 @@ import PollNotFoundError from '../../../../src/domain/errors/PollNotFoundError';
 import PollOptionNotFoundError from '../../../../src/domain/errors/PollOptionNotFoundError';
 import UserAlreadyVotedError from '../../../../src/domain/errors/UserAlreadyVotedError';
 import { ICreateVote } from '../../../../src/domain/interfaces/dtos/vote/ICreateVote';
+import { PollStatus } from '../../../../src/domain/enums/PollStatus';
 
 describe('CreateVoteUseCase', () => {
   let createVoteUseCase: CreateVoteUseCase;
@@ -83,6 +84,7 @@ describe('CreateVoteUseCase', () => {
       title: 'Test Poll',
       description: 'Test Description',
       type: PollTypes.PUBLIC,
+      status: PollStatus.OPEN,
       options: [mockPollOption1, mockPollOption2],
       creator: mockUser,
       createdAt: new Date('2023-10-10T10:00:00.000Z'),
