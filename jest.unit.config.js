@@ -6,6 +6,10 @@ module.exports = {
   transform: {
     '^.+\\.(t|j)s$': 'ts-jest',
   },
+  reporters: [
+    'default',
+    ['jest-junit', { outputDirectory: 'test-results', outputName: 'unit.xml' }],
+  ],
   collectCoverageFrom: ['src/domain/use-cases/**/*.ts'],
   coverageDirectory: './coverage/unit',
   coverageReporters: ['text', 'lcov', 'html'],
