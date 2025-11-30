@@ -3,6 +3,8 @@ import PollTypes from '~/domain/enums/PollTypes';
 import { PollStatus } from '~/domain/enums/PollStatus';
 import UserResponseDTO from '../user/UserResponseDTO';
 import PollOptionWithVotesDTO from './PollOptionWithVotesDTO';
+import PollOption from '~/domain/entities/PollOption';
+import PollOptionResponseDTO from './PollOptionResponseDTO';
 
 export default class PollWithVotesResponseDTO {
   @ApiProperty({ example: '123e4567-e89b-12d3-a456-426614174000' })
@@ -37,4 +39,12 @@ export default class PollWithVotesResponseDTO {
 
   @ApiProperty({ example: '2025-11-10T10:00:00.000Z', required: false })
   updatedAt?: Date;
+  @ApiProperty({
+    type: () => PollOptionResponseDTO,
+    nullable: true,
+    required: false,
+    description: 'The option the current user voted for, or null if none',
+    example: null,
+  })
+  votedOption: PollOptionResponseDTO | null;
 }

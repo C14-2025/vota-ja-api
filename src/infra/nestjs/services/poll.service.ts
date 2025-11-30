@@ -20,12 +20,14 @@ import PollNotFoundError from '~/domain/errors/PollNotFoundError';
 import UnauthorizedPollAccessError from '~/domain/errors/UnauthorizedPollAccessError';
 import Poll from '~/domain/entities/Poll';
 import { PollStatus } from '~/domain/enums/PollStatus';
+import ClosePollUseCase from '~/domain/use-cases/poll/close-poll';
 
 @Injectable()
 export default class PollService {
   createPollUseCase: CreatePollUseCase;
   getPollByIdUseCase: GetPollByIdUseCase;
   getAllPollsUseCase: GetAllPollsUseCase;
+  closePollUseCase: ClosePollUseCase;
 
   constructor(
     private readonly pollRepository: PollRepository,
@@ -41,6 +43,7 @@ export default class PollService {
       this.voteRepository,
     );
     this.getAllPollsUseCase = new GetAllPollsUseCase(this.pollRepository);
+    this.closePollUseCase = new ClosePollUseCase(this.pollRepository);
   }
 
   async createPoll(
@@ -59,18 +62,19 @@ export default class PollService {
   }
 
   async closePoll(pollId: string, userId: string): Promise<void> {
-    const poll = await this.pollRepository.getById(pollId);
+    try {
+      return await this.closePollUseCase.execute(pollId, userId);
+    } catch (error) {
+      if (error instanceof PollNotFoundError) {
+        throw new NotFoundException(error.message);
+      }
 
-    if (!poll) {
-      throw new NotFoundException('Poll not found');
+      if (error instanceof UnauthorizedPollAccessError) {
+        throw new ForbiddenException(error.message);
+      }
+
+      throw new InternalServerErrorException(error);
     }
-
-    if (poll.creator.id !== userId) {
-      throw new ForbiddenException('Only the creator can close this poll');
-    }
-
-    poll.status = PollStatus.CLOSED;
-    await this.pollRepository.save(poll);
   }
 
   async getPollById(
@@ -111,6 +115,7 @@ export default class PollService {
         totalVotes: pollWithVotes.totalVotes,
         createdAt: pollWithVotes.createdAt,
         updatedAt: pollWithVotes.updatedAt,
+        votedOption: pollWithVotes.votedOption,
       };
     } catch (error) {
       if (error instanceof PollNotFoundError) {

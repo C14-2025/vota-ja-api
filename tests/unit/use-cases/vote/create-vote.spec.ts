@@ -15,6 +15,7 @@ import PollOptionNotFoundError from '../../../../src/domain/errors/PollOptionNot
 import UserAlreadyVotedError from '../../../../src/domain/errors/UserAlreadyVotedError';
 import { ICreateVote } from '../../../../src/domain/interfaces/dtos/vote/ICreateVote';
 import { PollStatus } from '../../../../src/domain/enums/PollStatus';
+import PollClosedError from '~/domain/errors/PollClosedError';
 
 describe('CreateVoteUseCase', () => {
   let createVoteUseCase: CreateVoteUseCase;
@@ -420,6 +421,27 @@ describe('CreateVoteUseCase', () => {
       callOrder.forEach(mock => {
         expect(mock).toHaveBeenCalledTimes(1);
       });
+    });
+
+    it('should throw PollClosedError when poll is closed', async () => {
+      const closedPoll = {
+        ...mockPoll,
+        status: PollStatus.CLOSED,
+      };
+
+      userRepository.getById.mockResolvedValue(mockUser);
+      pollRepository.getById.mockResolvedValue(closedPoll);
+
+      await expect(
+        createVoteUseCase.execute(mockUser.id, mockCreateVoteData),
+      ).rejects.toThrow(PollClosedError);
+
+      expect(userRepository.getById).toHaveBeenCalledTimes(1);
+      expect(pollRepository.getById).toHaveBeenCalledTimes(1);
+      expect(pollOptionRepository.getById).not.toHaveBeenCalled();
+      expect(voteRepository.findByUserAndPoll).not.toHaveBeenCalled();
+      expect(voteRepository.create).not.toHaveBeenCalled();
+      expect(pollRealtimePort.publishPollUpdate).not.toHaveBeenCalled();
     });
 
     it('should create vote entity with correct properties', async () => {
