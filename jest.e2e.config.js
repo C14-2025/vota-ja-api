@@ -16,7 +16,7 @@ module.exports = {
 
   reporters: [
     'default',
-    ['jest-junit', { outputDirectory: 'test-results', outputName: 'unit.xml' }],
+    ['jest-junit', { outputDirectory: 'test-results', outputName: 'e2e.xml' }],
   ],
 
   collectCoverageFrom: [
