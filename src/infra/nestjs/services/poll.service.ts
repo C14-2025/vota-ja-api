@@ -115,6 +115,7 @@ export default class PollService {
         totalVotes: pollWithVotes.totalVotes,
         createdAt: pollWithVotes.createdAt,
         updatedAt: pollWithVotes.updatedAt,
+        votedOption: pollWithVotes.votedOption,
       };
     } catch (error) {
       if (error instanceof PollNotFoundError) {
