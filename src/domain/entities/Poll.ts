@@ -1,4 +1,5 @@
 import PollTypes from '../enums/PollTypes';
+import { PollStatus } from '../enums/PollStatus';
 import PollOption from './PollOption';
 import User from './User';
 
@@ -14,6 +15,8 @@ export default class Poll {
   description: string;
 
   type: PollTypes;
+
+  status: PollStatus;
 
   options: PollOption[];
 

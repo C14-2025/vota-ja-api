@@ -4,6 +4,7 @@ import Poll from '../../../../src/domain/entities/Poll';
 import User from '../../../../src/domain/entities/User';
 import PollOption from '../../../../src/domain/entities/PollOption';
 import PollTypes from '../../../../src/domain/enums/PollTypes';
+import { PollStatus } from '../../../../src/domain/enums/PollStatus';
 import { Pagination } from 'nestjs-typeorm-paginate';
 
 describe('GetAllPollsUseCase', () => {
@@ -43,13 +44,13 @@ describe('GetAllPollsUseCase', () => {
       text: 'Option 2',
       createdAt: new Date('2023-10-10T10:00:00.000Z'),
     } as PollOption;
-
     const mockPolls: Poll[] = [
       {
         id: 'poll-1',
         title: 'First Poll',
         description: 'Description of first poll',
         type: PollTypes.PUBLIC,
+        status: PollStatus.OPEN,
         options: [mockPollOption1, mockPollOption2],
         creator: mockUser,
         createdAt: new Date('2023-10-10T10:00:00.000Z'),
@@ -60,6 +61,7 @@ describe('GetAllPollsUseCase', () => {
         title: 'Second Poll',
         description: 'Description of second poll',
         type: PollTypes.PRIVATE,
+        status: PollStatus.OPEN,
         options: [mockPollOption1],
         creator: mockUser,
         createdAt: new Date('2023-10-11T11:00:00.000Z'),
@@ -70,6 +72,7 @@ describe('GetAllPollsUseCase', () => {
         title: 'Third Poll',
         description: 'Description of third poll',
         type: PollTypes.PUBLIC,
+        status: PollStatus.OPEN,
         options: [mockPollOption1, mockPollOption2],
         creator: mockUser,
         createdAt: new Date('2023-10-12T12:00:00.000Z'),

@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import PollTypes from '~/domain/enums/PollTypes';
+import { PollStatus } from '~/domain/enums/PollStatus';
 import UserResponseDTO from '../user/UserResponseDTO';
 import PollOptionResponseDTO from './PollOptionResponseDTO';
 
@@ -15,6 +16,9 @@ export default class PollResponseDTO {
 
   @ApiProperty({ enum: PollTypes, example: PollTypes.PUBLIC })
   type: PollTypes;
+
+  @ApiProperty({ enum: PollStatus, example: PollStatus.OPEN })
+  status: PollStatus;
 
   @ApiProperty({ type: () => [PollOptionResponseDTO] })
   options: PollOptionResponseDTO[];
