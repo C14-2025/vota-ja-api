@@ -14,6 +14,11 @@ module.exports = {
     '^domain/(.*)$': '<rootDir>/src/domain/$1',
   }),
 
+  reporters: [
+    'default',
+    ['jest-junit', { outputDirectory: 'test-results', outputName: 'unit.xml' }],
+  ],
+
   collectCoverageFrom: [
     'src/infra/nestjs/controllers/**/*.ts',
     'src/infra/websocket/**/*.ts',
