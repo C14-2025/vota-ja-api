@@ -1,4 +1,3 @@
-import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import { PollStatus } from '~/domain/enums/PollStatus';
 import PollNotFoundError from '~/domain/errors/PollNotFoundError';
 import UnauthorizedPollAccessError from '~/domain/errors/UnauthorizedPollAccessError';
