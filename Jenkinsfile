@@ -45,28 +45,50 @@ pipeline {
           }
           post {
             success {
-              archiveArtifacts artifacts: 'dist/**/*', allowEmptyArchive: true
+              archiveArtifacts artifacts: 'dist/*/', allowEmptyArchive: true
             }
           }
         }
       }
     }
 
-    stage('Run E2E Tests') {
-      steps {
-        sh 'npm run test:e2e -- --coverage --ci'
-      }
-      post {
-        always {
-          junit 'test-results/e2e.xml'
-          publishHTML([
-            allowMissing: false,
-            alwaysLinkToLastBuild: true,
-            keepAll: true,
-            reportDir: 'coverage/e2e',
-            reportFiles: 'index.html',
-            reportName: 'E2E Test Coverage Report'
-          ])
+    stage('Run Tests') {
+      parallel {
+        stage('Unit Tests') {
+          steps {
+            sh 'npm run test:unit -- --coverage --ci'
+          }
+          post {
+            always {
+              junit 'test-results/unit.xml'
+              publishHTML([
+                allowMissing: false,
+                alwaysLinkToLastBuild: true,
+                keepAll: true,
+                reportDir: 'coverage/unit',
+                reportFiles: 'index.html',
+                reportName: 'Unit Test Coverage Report'
+              ])
+            }
+          }
+        }
+        stage('E2E Tests') {
+          steps {
+            sh 'npm run test:e2e -- --coverage --ci'
+          }
+          post {
+            always {
+              junit 'test-results/e2e.xml'
+              publishHTML([
+                allowMissing: false,
+                alwaysLinkToLastBuild: true,
+                keepAll: true,
+                reportDir: 'coverage/e2e',
+                reportFiles: 'index.html',
+                reportName: 'E2E Test Coverage Report'
+              ])
+            }
+          }
         }
       }
     }
