@@ -5,6 +5,11 @@ pipeline {
     nodejs "node20"
   }
 
+  environment {
+    NODE_OPTIONS = '--max_old_space_size=4096'
+    CI = 'true'
+  }
+
   stages {
     stage('Checkout') {
       steps {
@@ -12,24 +17,80 @@ pipeline {
       }
     }
 
-    stage('Install dependencies') {
+    stage('Cache & Install') {
       steps {
-        sh 'npm install'
+        // Cache node_modules for faster builds
+        script {
+          def nodeModulesExists = fileExists('node_modules')
+          if (!nodeModulesExists) {
+            echo 'Installing dependencies...'
+            sh 'npm ci'
+          } else {
+            echo 'Using cached dependencies'
+          }
+        }
       }
     }
 
-    stage('Run E2E tests') {
+    stage('Lint & Build') {
+      parallel {
+        stage('Lint') {
+          steps {
+            sh 'npm run lint:check'
+          }
+        }
+        stage('Build') {
+          steps {
+            sh 'npm run build'
+          }
+          post {
+            success {
+              archiveArtifacts artifacts: 'dist/**/*', allowEmptyArchive: true
+            }
+          }
+        }
+      }
+    }
+
+    stage('Run E2E Tests') {
       steps {
-        sh '''
-          npm run test:e2e -- --coverage
-        '''
+        sh 'npm run test:e2e -- --coverage --ci'
+      }
+      post {
+        always {
+          junit 'test-results/e2e.xml'
+          publishHTML([
+            allowMissing: false,
+            alwaysLinkToLastBuild: true,
+            keepAll: true,
+            reportDir: 'coverage/e2e',
+            reportFiles: 'index.html',
+            reportName: 'E2E Test Coverage Report'
+          ])
+        }
+      }
+    }
+
+    stage('Security Audit') {
+      steps {
+        sh 'npm audit --audit-level=moderate'
       }
     }
   }
 
   post {
     always {
-      junit 'test-results/**/*.xml'
+      // Cleanup workspace
+      cleanWs()
+    }
+    success {
+      echo 'Pipeline completed successfully! 🎉'
+    }
+    failure {
+      echo 'Pipeline failed! ❌ Check the logs for details.'
+    }
+    unstable {
+      echo 'Pipeline completed with warnings! ⚠️'
     }
   }
 }
