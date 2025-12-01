@@ -15,11 +15,11 @@ import {
   ApiTags,
   ApiParam,
 } from '@nestjs/swagger';
-import VoteService from '../services/vote.service';
 import VoteResponseDTO from '~/infra/dtos/vote/VoteResponseDTO';
 import VoteCreateDTO from '~/infra/dtos/vote/VoteCreateDTO';
-import JwtAuthGuard from '../auth/jwt-auth.guard';
 import ApiCommonResponses from '~/infra/swagger/swagger-common-responses.decorator';
+import JwtAuthGuard from '../auth/jwt-auth.guard';
+import VoteService from '../services/vote.service';
 
 @ApiTags('votes')
 @Controller('/polls')

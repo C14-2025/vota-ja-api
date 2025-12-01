@@ -25,7 +25,7 @@ export default class VoteRepository implements IVoteRepository {
     const vote = await this.voteRepository.findOne({
       where: {
         voterId: userId,
-        pollId: pollId,
+        pollId,
       },
       relations: ['voter', 'poll', 'option'],
     });
@@ -57,7 +57,7 @@ export default class VoteRepository implements IVoteRepository {
   async delete(userId: string, pollId: string): Promise<void> {
     await this.voteRepository.delete({
       voterId: userId,
-      pollId: pollId,
+      pollId,
     });
   }
 }

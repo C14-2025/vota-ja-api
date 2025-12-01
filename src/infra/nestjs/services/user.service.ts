@@ -17,7 +17,9 @@ import BcryptHasher from '~/infra/cryptography/bcrypt-hasher';
 @Injectable()
 export default class UserService {
   createUserUseCase: CreateUserUseCase;
+
   getUserByIdUseCase: GetUserByIdUseCase;
+
   getAllUsersUseCase: GetAllUsersUseCase;
 
   constructor(private readonly userRepository: UserRepository) {

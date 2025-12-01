@@ -30,7 +30,7 @@ export default class RemoveVoteUseCase {
 
     if (votedOption) {
       this.pollRealtimePort.publishPollUpdate(pollId, {
-        pollId: pollId,
+        pollId,
         optionId: existingVote.option.id,
         totalVotes: pollResults.totalVotes,
         optionVotes: votedOption.voteCount,

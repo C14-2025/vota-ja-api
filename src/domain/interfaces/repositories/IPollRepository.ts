@@ -1,6 +1,6 @@
 import Poll from '~/domain/entities/Poll';
-import { IPollResults } from '../dtos/poll/IPollResults';
 import { IPaginationOptions, Pagination } from 'nestjs-typeorm-paginate';
+import { IPollResults } from '../dtos/poll/IPollResults';
 
 export interface IPollRepository {
   create(poll: Poll): Promise<Poll>;

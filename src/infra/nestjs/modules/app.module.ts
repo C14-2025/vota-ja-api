@@ -5,6 +5,8 @@ import { config } from '~/infra/config';
 
 import { WinstonModule } from 'nest-winston';
 import winstonConfig from '~/infra/config/winston.config';
+import { PollGateway } from '~/infra/websocket/poll.gateway';
+import { PollRealtimeAdapter } from '~/infra/websocket/poll-realtime-adapter';
 import AuthModule from './auth.module';
 import UserModule from './user.module';
 import PollModule from './poll.module';
@@ -13,8 +15,6 @@ import TypeOrmModuleConfig from '../../databases/typeorm';
 import LoggerInterceptor from '../interceptors/logger.interceptor';
 import AllExceptionsFilter from '../exceptions/all-exceptions-filter';
 import AppController from '../controllers/app.controller';
-import { PollGateway } from '~/infra/websocket/poll.gateway';
-import { PollRealtimeAdapter } from '~/infra/websocket/poll-realtime-adapter';
 
 @Module({
   imports: [

@@ -24,6 +24,7 @@ import { PollRealtimeAdapter } from '~/infra/websocket/poll-realtime-adapter';
 @Injectable()
 export default class VoteService {
   createVoteUseCase: CreateVoteUseCase;
+
   removeVoteUseCase: RemoveVoteUseCase;
 
   constructor(

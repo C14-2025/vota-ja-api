@@ -24,6 +24,8 @@ module.exports = {
     "@typescript-eslint/no-empty-function": ["error"],
     "import/no-extraneous-dependencies": ["error", { devDependencies: true }],
     "import/no-dynamic-require": "warn",
+    "import/prefer-default-export": "off",
+    "no-underscore-dangle": "off",
     "import/extensions": [
       "error",
       "ignorePackages",

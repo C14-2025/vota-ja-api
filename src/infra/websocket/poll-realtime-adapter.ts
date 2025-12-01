@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 
 import { IPollVoteUpdateEvent } from '~/domain/events/IPollVoteUpdateEvent';
-import { PollGateway } from './poll.gateway';
 import { IPollRealtimePort } from '~/domain/ports/IPollRealtimePort';
+import { PollGateway } from './poll.gateway';
 
 @Injectable()
 export class PollRealtimeAdapter implements IPollRealtimePort {

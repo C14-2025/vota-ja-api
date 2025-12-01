@@ -2,7 +2,6 @@ import Poll from '~/domain/entities/Poll';
 import User from '~/domain/entities/User';
 import PollTypes from '~/domain/enums/PollTypes';
 import { PollStatus } from '~/domain/enums/PollStatus';
-import BaseModel from './Base';
 import {
   Column,
   Entity,
@@ -11,8 +10,9 @@ import {
   OneToMany,
   Relation,
 } from 'typeorm';
-import UserModel from './User';
 import PollOption from '~/domain/entities/PollOption';
+import BaseModel from './Base';
+import UserModel from './User';
 import PollOptionModel from './PollOption';
 
 @Entity('polls')

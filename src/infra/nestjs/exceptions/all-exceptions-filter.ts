@@ -8,8 +8,8 @@ import {
 } from '@nestjs/common';
 import { Response, Request } from 'express';
 
-import { ICustomHttpExceptionResponse } from './ICustomHttpExceptionResponse';
 import { IErrorResponse } from '~/domain/interfaces/IErroResponse';
+import { ICustomHttpExceptionResponse } from './ICustomHttpExceptionResponse';
 
 @Catch()
 export default class AllExceptionsFilter implements ExceptionFilter {
@@ -34,6 +34,7 @@ export default class AllExceptionsFilter implements ExceptionFilter {
     Logger.error(errorLog, 'All Exception FIlter');
 
     response.status(error.statusCode).json(error);
+    return response;
   }
 
   private getHttpException(exception: Error): IErrorResponse {

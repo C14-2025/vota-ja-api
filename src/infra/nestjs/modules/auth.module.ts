@@ -2,12 +2,12 @@ import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import UserModel from '~/infra/databases/models/User';
+import UserRepository from '~/infra/databases/typeorm/repositories/user.repository';
 import { config } from '../../config';
 
 import LocalStrategy from '../auth/local.strategy';
 import JwtStrategy from '../auth/jwt.strategy';
-import UserModel from '~/infra/databases/models/User';
-import UserRepository from '~/infra/databases/typeorm/repositories/user.repository';
 import AuthorizationService from '../services/auth.service';
 import AuthController from '../controllers/auth.controller';
 

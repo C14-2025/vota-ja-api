@@ -34,6 +34,6 @@ export default class CreatePollUseCase {
 
     poll.options = options;
 
-    return await this.pollRepository.create(poll);
+    return this.pollRepository.create(poll);
   }
 }

@@ -1,8 +1,7 @@
 import PollOption from '~/domain/entities/PollOption';
-import WeakEntityBaseModel from './WeakEntityBase';
 import Poll from '~/domain/entities/Poll';
-import BaseModel from './Base';
 import { Column, Entity, JoinColumn, ManyToOne, Relation } from 'typeorm';
+import BaseModel from './Base';
 import PollModel from './Poll';
 
 @Entity('poll_options')

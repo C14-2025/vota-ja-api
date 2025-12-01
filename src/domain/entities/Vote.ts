@@ -1,4 +1,3 @@
-import PollTypes from '../enums/PollTypes';
 import Poll from './Poll';
 import PollOption from './PollOption';
 import User from './User';
