@@ -13,7 +13,9 @@ export default class OptionalJwtAuthGuard extends AuthGuard('jwt') {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     try {
       await super.canActivate(context);
-    } catch (err) {}
+    } catch {
+      return false;
+    }
     return true;
   }
 }

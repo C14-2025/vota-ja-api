@@ -1,10 +1,10 @@
 import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
-import AuthorizationService from '../services/auth.service';
 import AuthResponseDTO from '~/infra/dtos/auth/AuthResponseDTO';
 import AuthLoginDTO from '~/infra/dtos/auth/AuthLoginDTO';
-import LocalAuthGuard from '../auth/local-auth.guard';
 import ApiCommonResponses from '~/infra/swagger/swagger-common-responses.decorator';
+import LocalAuthGuard from '../auth/local-auth.guard';
+import AuthorizationService from '../services/auth.service';
 
 @ApiTags('auth')
 @Controller('/auth')

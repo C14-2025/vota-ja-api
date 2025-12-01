@@ -5,11 +5,11 @@ import {
   ApiTags,
   ApiCreatedResponse,
 } from '@nestjs/swagger';
-import UserService from '../services/user.service';
 import UserResponseDTO from '~/infra/dtos/user/UserResponseDTO';
 import UserCreateDTO from '~/infra/dtos/user/UserCreateDTO';
-import JwtAuthGuard from '../auth/jwt-auth.guard';
 import ApiCommonResponses from '~/infra/swagger/swagger-common-responses.decorator';
+import JwtAuthGuard from '../auth/jwt-auth.guard';
+import UserService from '../services/user.service';
 
 @ApiTags('users')
 @Controller('/users')

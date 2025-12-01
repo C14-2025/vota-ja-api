@@ -52,8 +52,8 @@ export default class CreateVoteUseCase {
 
     const vote = new Votes({
       voter: user,
-      poll: poll,
-      option: option,
+      poll,
+      option,
     });
 
     const saveVote = await this.voteRepository.create(vote);

@@ -19,14 +19,16 @@ import UserNotFoundError from '~/domain/errors/UserNotFoundError';
 import PollNotFoundError from '~/domain/errors/PollNotFoundError';
 import UnauthorizedPollAccessError from '~/domain/errors/UnauthorizedPollAccessError';
 import Poll from '~/domain/entities/Poll';
-import { PollStatus } from '~/domain/enums/PollStatus';
 import ClosePollUseCase from '~/domain/use-cases/poll/close-poll';
 
 @Injectable()
 export default class PollService {
   createPollUseCase: CreatePollUseCase;
+
   getPollByIdUseCase: GetPollByIdUseCase;
+
   getAllPollsUseCase: GetAllPollsUseCase;
+
   closePollUseCase: ClosePollUseCase;
 
   constructor(

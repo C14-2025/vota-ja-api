@@ -1,7 +1,7 @@
 import { Column, Entity } from 'typeorm';
 
-import BaseModel from './Base';
 import User from '~/domain/entities/User';
+import BaseModel from './Base';
 
 @Entity('users')
 export default class UserModel extends BaseModel implements User {

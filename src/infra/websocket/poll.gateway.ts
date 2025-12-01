@@ -16,6 +16,7 @@ export class PollGateway {
 
   @SubscribeMessage('ping')
   handlePing(@MessageBody() msg: string, @ConnectedSocket() client: Socket) {
+    client.emit('pong', msg);
     return { event: 'pong', data: msg };
   }
 
