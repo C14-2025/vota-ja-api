@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, In } from 'typeorm';
+import { Repository, In, LessThan } from 'typeorm';
 import {
   paginate,
   Pagination,
@@ -8,6 +8,7 @@ import {
 } from 'nestjs-typeorm-paginate';
 
 import Poll from '~/domain/entities/Poll';
+import { PollStatus } from '~/domain/enums/PollStatus';
 import { IPollRepository } from '~/domain/interfaces/repositories/IPollRepository';
 import { IPollResults } from '~/domain/interfaces/dtos/poll/IPollResults';
 import PollModel from '../../models/Poll';
@@ -20,7 +21,7 @@ export default class PollRepository implements IPollRepository {
     private readonly pollRepository: Repository<PollModel>,
     @InjectRepository(VoteModel)
     private readonly voteRepository: Repository<VoteModel>,
-  ) {}
+  ) { }
 
   async create(poll: Poll): Promise<Poll> {
     const savedPollModel = await this.pollRepository.save(poll);
@@ -132,5 +133,19 @@ export default class PollRepository implements IPollRepository {
     }
 
     return paginatedResult;
+  }
+
+  async findExpiredPolls(currentDate: Date): Promise<Poll[]> {
+    return this.pollRepository.find({
+      where: {
+        expiresAt: LessThan(currentDate),
+        status: PollStatus.OPEN,
+      },
+      relations: ['options', 'creator'],
+    });
+  }
+
+  async update(poll: Poll): Promise<Poll> {
+    return this.pollRepository.save(poll);
   }
 }

@@ -20,6 +20,7 @@ import PollNotFoundError from '~/domain/errors/PollNotFoundError';
 import UnauthorizedPollAccessError from '~/domain/errors/UnauthorizedPollAccessError';
 import Poll from '~/domain/entities/Poll';
 import ClosePollUseCase from '~/domain/use-cases/poll/close-poll';
+import { PollStatus } from '~/domain/enums/PollStatus';
 
 @Injectable()
 export default class PollService {
@@ -46,6 +47,31 @@ export default class PollService {
     );
     this.getAllPollsUseCase = new GetAllPollsUseCase(this.pollRepository);
     this.closePollUseCase = new ClosePollUseCase(this.pollRepository);
+  }
+
+  private async checkAndCloseExpiredPoll(poll: any): Promise<any> {
+    if (
+      poll &&
+      poll.expiresAt &&
+      new Date() > new Date(poll.expiresAt) &&
+      poll.status === PollStatus.OPEN
+    ) {
+      try {
+        poll.status = PollStatus.CLOSED;
+        poll.updatedAt = new Date();
+        await this.pollRepository.save(poll);
+      } catch (error) {
+        console.error('Error closing expired poll:', error);
+      }
+    }
+    return poll;
+  }
+
+  private async checkAndCloseExpiredPolls(polls: any[]): Promise<any[]> {
+    for (const poll of polls) {
+      await this.checkAndCloseExpiredPoll(poll);
+    }
+    return polls;
   }
 
   async createPoll(
@@ -89,6 +115,8 @@ export default class PollService {
         userId,
       );
 
+      await this.checkAndCloseExpiredPoll(pollWithVotes);
+
       // Criar um mapa de contagem de votos por optionId
       const voteCountMap = new Map(
         pollWithVotes.voteCounts.map(vc => [vc.optionId, vc.count]),
@@ -117,6 +145,7 @@ export default class PollService {
         totalVotes: pollWithVotes.totalVotes,
         createdAt: pollWithVotes.createdAt,
         updatedAt: pollWithVotes.updatedAt,
+        expiresAt: pollWithVotes.expiresAt,
         votedOption: pollWithVotes.votedOption,
       };
     } catch (error) {
@@ -138,7 +167,14 @@ export default class PollService {
     userId?: string,
   ): Promise<Pagination<Poll>> {
     try {
-      return await this.getAllPollsUseCase.execute(options, search, userId);
+      const result = await this.getAllPollsUseCase.execute(options, search, userId);
+
+      // Verificar e fechar polls expiradas
+      if (result.items && result.items.length > 0) {
+        await this.checkAndCloseExpiredPolls(result.items);
+      }
+
+      return result;
     } catch (error) {
       throw new InternalServerErrorException(error);
     }

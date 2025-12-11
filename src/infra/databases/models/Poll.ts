@@ -29,6 +29,9 @@ export default class PollModel extends BaseModel implements Poll {
   @Column('enum', { enum: PollStatus, default: PollStatus.OPEN })
   status: PollStatus;
 
+  @Column({ type: 'timestamp', nullable: true })
+  expiresAt?: Date;
+
   @OneToMany(() => PollOptionModel, option => option.poll, { cascade: true })
   options: Relation<PollOption[]>;
 

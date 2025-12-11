@@ -19,7 +19,7 @@ export default class CreateVoteUseCase {
     private readonly pollRepository: IPollRepository,
     private readonly pollOptionRepository: IPollOptionRepository,
     private readonly pollRealtimePort: IPollRealtimePort,
-  ) {}
+  ) { }
 
   async execute(userId: string, data: ICreateVote): Promise<Votes> {
     const user = await this.userRepository.getById(userId);
@@ -33,6 +33,11 @@ export default class CreateVoteUseCase {
     }
 
     if (poll.status === PollStatus.CLOSED) {
+      throw new PollClosedError();
+    }
+
+    // Verifica se a poll está expirada
+    if (poll.expiresAt && new Date() > poll.expiresAt) {
       throw new PollClosedError();
     }
 

@@ -31,4 +31,11 @@ export default class PollResponseDTO {
 
   @ApiProperty({ example: '2025-11-10T10:00:00.000Z', required: false })
   updatedAt?: Date;
+
+  @ApiProperty({
+    example: '2025-12-31T23:59:59.000Z',
+    required: false,
+    description: 'Date and time when the poll will expire and be automatically closed'
+  })
+  expiresAt?: Date;
 }

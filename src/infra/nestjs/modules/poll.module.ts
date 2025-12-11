@@ -8,8 +8,12 @@ import VoteRepository from '~/infra/databases/typeorm/repositories/vote.reposito
 import VoteModel from '~/infra/databases/models/Vote';
 import { PollRealtimeAdapter } from '~/infra/websocket/poll-realtime-adapter';
 import { PollGateway } from '~/infra/websocket/poll.gateway';
+import CreatePollUseCase from '~/domain/use-cases/poll/create';
+import CloseExpiredPollsUseCase from '~/domain/use-cases/poll/close-expired';
+import ValidatePollExpirationUseCase from '~/domain/use-cases/poll/validate-expiration';
 import PollController from '../controllers/poll.controller';
 import PollService from '../services/poll.service';
+import PollSchedulerService from '../services/poll-scheduler.service';
 
 export const POLL_REPOSITORY_TOKEN = 'IPollRepository';
 
@@ -23,6 +27,10 @@ export const POLL_REPOSITORY_TOKEN = 'IPollRepository';
     VoteRepository,
     PollRealtimeAdapter,
     PollGateway,
+    CreatePollUseCase,
+    CloseExpiredPollsUseCase,
+    ValidatePollExpirationUseCase,
+    PollSchedulerService,
     {
       provide: POLL_REPOSITORY_TOKEN,
       useClass: PollRepository,
@@ -35,4 +43,4 @@ export const POLL_REPOSITORY_TOKEN = 'IPollRepository';
     PollGateway,
   ],
 })
-export default class PollModule {}
+export default class PollModule { }

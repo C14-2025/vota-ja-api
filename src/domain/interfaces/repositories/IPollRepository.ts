@@ -12,4 +12,6 @@ export interface IPollRepository {
     search?: string,
     userId?: string,
   ): Promise<Pagination<Poll>>;
+  findExpiredPolls(currentDate: Date): Promise<Poll[]>;
+  update(poll: Poll): Promise<Poll>;
 }

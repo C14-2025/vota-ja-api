@@ -32,7 +32,7 @@ import PollService from '../services/poll.service';
 @ApiTags('polls')
 @Controller('/polls')
 export default class PollController {
-  constructor(private readonly pollService: PollService) {}
+  constructor(private readonly pollService: PollService) { }
 
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()

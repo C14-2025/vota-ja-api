@@ -9,7 +9,7 @@ export default class CreatePollUseCase {
   constructor(
     private readonly pollRepository: IPollRepository,
     private readonly userRepository: IUserRepository,
-  ) {}
+  ) { }
 
   async execute(userId: string, data: ICreatePoll): Promise<Poll> {
     const user = await this.userRepository.getById(userId);
@@ -23,6 +23,7 @@ export default class CreatePollUseCase {
       description: data.description,
       title: data.title,
       type: data.type,
+      expiresAt: data.expiresAt,
     });
 
     const options = data.options.map(

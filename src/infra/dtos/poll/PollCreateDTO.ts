@@ -5,6 +5,8 @@ import {
   IsEnum,
   IsArray,
   ArrayMinSize,
+  IsOptional,
+  IsDateString,
 } from 'class-validator';
 import PollTypes from '~/domain/enums/PollTypes';
 
@@ -43,4 +45,13 @@ export default class PollCreateDTO {
   @ArrayMinSize(2)
   @IsString({ each: true })
   options: string[];
+
+  @ApiProperty({
+    example: '2023-12-31T23:59:59.000Z',
+    description: 'Expiration date and time for the poll (optional)',
+    required: false,
+  })
+  @IsOptional()
+  @IsDateString()
+  expiresAt?: Date;
 }

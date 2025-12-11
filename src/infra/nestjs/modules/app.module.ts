@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { APP_INTERCEPTOR, APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { ScheduleModule } from '@nestjs/schedule';
 import { config } from '~/infra/config';
 
 import { WinstonModule } from 'nest-winston';
@@ -19,6 +20,7 @@ import AppController from '../controllers/app.controller';
 @Module({
   imports: [
     WinstonModule.forRoot(winstonConfig),
+    ScheduleModule.forRoot(),
     ThrottlerModule.forRoot([
       { ttl: config.rateLimit.ttl, limit: config.rateLimit.limit },
     ]),
@@ -37,4 +39,4 @@ import AppController from '../controllers/app.controller';
     PollRealtimeAdapter,
   ],
 })
-export default class AppModule {}
+export default class AppModule { }

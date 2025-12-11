@@ -5,4 +5,5 @@ export interface ICreatePoll {
   description: string;
   type: PollTypes;
   options: string[];
+  expiresAt?: Date;
 }

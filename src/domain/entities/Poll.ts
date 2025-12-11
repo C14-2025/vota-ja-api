@@ -25,4 +25,6 @@ export default class Poll {
   createdAt: Date;
 
   updatedAt?: Date;
+
+  expiresAt?: Date;
 }
